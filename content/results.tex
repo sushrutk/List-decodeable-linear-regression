@@ -1,0 +1,124 @@
+
+%!TEX root = ../main.tex
+
+In this work, we design algorithms for the problem of linear regression that are robust to training sets with an overwhelming ($\gg 1/2$) fraction of adversarially chosen outliers. 
+
+Outlier-robust learning algorithms have been extensively studied (under the name \emph{robust statistics}) in mathematical statistics~\cite{MR0426989,maronna2006robust,huber2011robust,hampel2011robust}. However, the algorithms resulting from this line of work usually run in time exponential in the dimension of the data~\cite{bernholt2006robust}. An influential line of recent work \cite{journals/jmlr/KlivansLS09,journals/corr/AwasthiBL13, DBLP:journals/corr/DiakonikolasKKL16,DBLP:conf/focs/LaiRV16,DBLP:conf/stoc/CharikarSV17,KothariSteinhardt17,2017KS,HopkinsLi17,DBLP:journals/corr/DiakonikolasKK017a,DBLP:journals/corr/DiakonikolasKS17,DBLP:conf/colt/KlivansKM18} has focused on designing \emph{efficient} algorithms for outlier-robust learning. 
+
+Our work extends this line of research. Our algorithms work in the \emph{list-decodable learning} framework. In this model, the majority of the training data (a $1 -\alpha$ fraction) can be adversarially corrupted leaving only an $\alpha \ll 1/2$ fraction of \emph{inliers}. Since uniquely recovering the underlying parameters is information-theoretically \emph{impossible} in such a setting, the goal is to output a list (with an absolute constant size) of parameters, one of which matches the ground truth. This model was introduced in~\cite{DBLP:conf/stoc/BalcanBV08} to give a discriminative framework for clustering. More recently, beginning with~\cite{DBLP:conf/stoc/CharikarSV17}, various works~\cite{DBLP:conf/stoc/DiakonikolasKS18,KothariSteinhardt17} have considered this as a model of \emph{untrusted} data. 
+
+There has been a phenomenal progress in developing techniques for outlier-robust learning with a \emph{small} $(\ll 1/2)$-fraction of outliers (e.g. outlier \emph{filters}~\cite{DBLP:conf/focs/DiakonikolasKK016,DBLP:journals/corr/DiakonikolasKK017a}, separation oracles for inliers~\cite{DBLP:conf/focs/DiakonikolasKK016} or the \emph{sum-of-squares} method~\cite{2017KS,HopkinsLi17,KothariSteinhardt17,DBLP:conf/colt/KlivansKM18}). In contrast, progress on algorithms that tolerate the significantly harsher conditions in the list-decodable setting has been slower. The only prior works~\cite{DBLP:conf/stoc/CharikarSV17,DBLP:conf/stoc/DiakonikolasKS18,KothariSteinhardt17} in this direction designed list-decodable algorithms for mean estimation via somewhat \emph{ad hoc}, problem-specific methods. 
+
+In this paper, we develop a principled technique to give the first efficient list-decodable learning algorithm for the fundamental problem of \emph{linear regression}. Our algorithm takes a corrupted set of linear equations with an $\alpha \ll 1/2$ fraction of inliers and outputs a $O(1/\alpha)$-size list of linear functions, one of which is guaranteed to be close to the ground truth (i.e., the linear function that correctly labels the inliers). Our key conceptual observation shows that list-decodable regression information-theoretically requires the inlier-distribution to be \emph{anti-concentrated}. Our algorithm succeeds whenever the distribution satisfies a stronger \emph{certifiable anti-concentration} condition. This class includes the standard gaussian distribution and more generally, any spherically symmetric distribution with strictly sub-exponential tails.
+
+Prior to our work\footnote{There's a long line of work on robust regression algorithms (see for e.g. \cite{DBLP:conf/nips/Bhatia0KK17,conf/soda/KarmalkarP19}) that can tolerate corruptions only in the \emph{labels}. We are interested in algorithms robust against corruptions in both examples and labels.}, the state-of-the-art outlier-robust algorithms for linear regression~\cite{DBLP:conf/colt/KlivansKM18,conf/soda/DiakonikolasKS19,journals/corr/abs-1803-02815,journals/corr/abs-1802-06485} could handle only a small $(<0.1)$-fraction of outliers even under strong assumptions on the underlying distributions. 
+
+List-decodable regression generalizes the well-studied~\cite{MR1028403,doi:10.1162/neco.1994.6.2.181,MR2757044,2013arXiv1310.3745Y,DBLP:journals/corr/BalakrishnanWY14,DBLP:conf/colt/ChenYC14,DBLP:conf/nips/Zhong0D16,DBLP:conf/aistats/SedghiJA16,DBLP:conf/colt/LiL18} and {\em easier} problem of \emph{mixed linear regression}: given $k$ ``clusters'' of examples that are labeled by one out of $k$ distinct unknown linear functions, find the unknown set of linear functions. All known techniques for the problem rely on faithfully estimating \emph{moment tensors} from samples and thus, cannot tolerate the overwhelming fraction of outliers in the list-decodable setting. On the other hand, since we can take any cluster as inliers and treat rest as outliers, our algorithm immediately yields new efficient algorithms for mixed linear regression. Unlike all prior works, our algorithms work without any pairwise separation or bounded condition-number assumptions on the $k$ linear functions. 
+
+
+
+
+
+
+
+
+% The MLR model is a popular mixture model and has many applications due to its effectiveness in captur- ing non-linearity and its model simplicity [De Veaux, 1989, Jordan and Jacobs, 1994, Faria and Soromenho, 2010, Zhong et al., 2016]. It has also been a recent theoretical topic for analyzing benchmark algorithms for nonconvex optimization (e.g., [Chaganty and Liang, 2013, Klusowski et al., 2017]) or designing new algo- rithms (e.g., [Chen et al., 2014]). However, most of the existing works either restrict to very special settings (e.g., x of different components all from the standard Gaussian, or only k = 2 components) [Chen et al., 2014, Yi et al., 2014, Zhong et al., 2016, Balakrishnan et al., 2017, Klusowski et al., 2017], or have high sample or computational complexity far from optimal [Chaganty and Liang, 2013, Sedghi et al., 2016].
+
+
+
+\paragraph{List-Decodable Learning via the Sum-of-Squares Method} Our algorithm relies on a strengthening of the robust-estimation framework based on the sum-of-squares (SoS) method. This paradigm has been recently used for clustering mixture models~\cite{HopkinsLi17,KothariSteinhardt17} and obtaining algorithms for moment estimation~\cite{2017KS} and linear regression~\cite{DBLP:conf/colt/KlivansKM18}
+ relies on a strengthening of robust-estimation framework based on the sum-of-squares (SoS) method. This paradigm has been recently used for clustering mixture models~\cite{HopkinsLi17,KothariSteinhardt17} and obtaining algorithms for moment estimation~\cite{2017KS} and linear regression~\cite{DBLP:conf/colt/KlivansKM18} that are resilient to a small $(\ll 1/2)$ fraction of outliers under the mildest known assumptions on the underlying distributions. Ths method reduces outlier-robust algorithm design to finding ``simple'' proofs of  unique \emph{identifiability} of the unknown parameter of the original distribution from a corrupted sample. However, this principled method works only in the setting with a small ($\ll 1/2$) fraction of outliers. As a consequence, the work of~\cite{KothariSteinhardt17} for mean estimation in the list-decodable setting relied on ``supplementing'' the SoS method with a somewhat \emph{ad hoc}, problem-dependent technique. 
+
+As an important conceptual contribution, our work yields a framework for list-decodable learning that recovers some of the simplicity of the general blueprint. To do this, we give a general method for \emph{rounding pseudo-distributions} in the setting with $\gg 1/2$ fraction outliers. A key step in our rounding builds on the work of~\cite{KS19} who developed such a method to give a simpler proof of the list-decodable mean estimation result of~\cite{KothariSteinhardt17}. In Section~\ref{sec:overview}, we explain our ideas in detail. 
+
+The results in all the works above hold whenever the underlying distribution satisfies a certain \emph{certified concentration} condition formulated within the SoS system via higher moment bounds. An important contribution of this work is formalizing an \emph{anti-concentration} condition within the SoS system. Unlike the bounded moment condition, there is no canonical phrasing  within SoS for such statements. We choose a form that allows proving ``certified anti-concentration'' for a distribution by showing the existence of a certain approximating polynomial. This allows showing certified anti-concentration of natural distributions via a completely modular approach that relies on a beautiful line of works that construct ``weighted '' polynomial approximators~\cite{2007math......1099L}. 
+
+We believe that our framework for list-decodable estimation and our formulation of certified anti-concentration condition will likely have further applications in outlier-robust learning. 
+% We focus on the setting where the noise rate is larger than $1/2$ and unique recovery of the underlying parameters is information-theoretically {\em impossible}.  We study the supervised learning problem of linear regression and assume that a learner has been given a training set where a (possibly greater than $1/2$) fraction of examples have been {\em arbitrarily} corrupted in both the labels and locations of the data points.  Given this training set as input, we give the first efficient algorithm for outputting a {\em list} of linear functions, one of which agrees with the original, uncorrupted data set (the list is {\em constant-size} where the constant depends on the noise rate).  We refer to this problem as {\em list-decodable linear regression}\footnote{Our setting is similar in spirit to list-decodable error correcting codes, but the problem statements and techniques are quite different.}.  It is easy to see that list-decodable linear regression is harder than classical {\em mixed linear regression}, an intensely studied problem in machine learning.  Our algorithm requires an assumption on the marginal distribution, namely {\em certifiable anti-concentration}, which we prove is information-theoretically necessary for list-decodability in this setting.  
+\subsection{Our Results}
+We first define our model for generating samples for list-decodable regression.
+
+\begin{model}[Robust Linear Regression]
+For $0 <\alpha < 1$ and $\ell^* \in \R^d$ with $\|\ell^*\|_2 \leq 1$, let $\Lin_D(\alpha,\ell^*)$ denote the following probabilistic process to generate $n$ noisy linear equations $\cS = \{ \langle x_i, a \rangle = y_i\mid 1\leq i \leq n\}$ in variable $a \in \R^d$ with $\alpha n$ \emph{inliers} $\cI$ and $(1-\alpha)n$ \emph{outliers} $\cO$:
+\begin{enumerate}
+\item Construct $\cI$ by choosing $\alpha n$ i.i.d. samples $x_i \sim D$ and set $y_i = \langle x_i,\ell^* \rangle + \zeta$ for additive and independent noise $\zeta$,
+\item Construct $\cO$ by  choosing the remaining $(1-\alpha)n$ equations arbitrarily and potentially adversarially w.r.t the inliers $\cI$.
+\end{enumerate}
+\label{model:random-equations}
+\end{model}
+The bound on the norm of $\ell^*$ is without any loss of generality. 
+% Our algorithm naturally extends to handle additive noise in the labels. 
+% We will focus mostly on the noiseless case for clarity of exposition.
+Note that $\alpha$ is measure of the ``signal'' (fraction of inliers) and can be $\ll 1/2$. 
+
+An $\eta$-approximate algorithm for list-decodable regression takes input a sample from $\Lin_D(\alpha,\ell^*)$ and outputs a \emph{constant} (depending only on $\alpha$) size list $L$ of linear functions such that there is some $\ell \in L$ that is $\eta$-close to $\ell^*$.
+
+One of our key conceptual contributions is to identify the strong relationship between \emph{anti-concentration inequalities} and list-decodable regression. Anti-concentration inequalities are well-studied~\cite{ErdosLittlewoodOfford,MR2965282-Tao12,MR2407948-Rudelson08} in probability theory and combinatorics. The simplest of these inequalities upper bound the probability that a high-dimensional random variable has zero projections in any direction.
+
+\begin{definition}[Anti-Concentration]
+A $\R^d$-valued zero-mean random variable $Y$ has a $\delta$-\emph{anti-concentrated} distribution if $\Pr[ \iprod{Y,v}=0 ]< \delta$. 
+\end{definition}
+
+In Proposition~\ref{prop:identifiability}, we provide a simple but conceptually illuminating proof that anti-concentration is \emph{sufficient} for list-decodable regression. In Theorem~\ref{thm:main-lower-bound}, we prove a sharp converse and show that anti-concentration is information-theoretically \emph{necessary} for even noiseless list-decodable regression. This lower bound surprisingly holds for a natural distribution: uniform distribution on $\zo^d$ and more generally, uniform distribution on $[q]^d$ for  $q = \{0,1,2\ldots,q\}$.
+
+\begin{theorem}[See Proposition~\ref{prop:identifiability} and Theorem~\ref{thm:main-lower-bound}]
+There is a (inefficient) list-decodable regression algorithm for $\Lin_D(\alpha,\ell^*)$ with list size $O(\frac{1}{\alpha})$ whenever $D$ is $\alpha$-anti-concentrated. 
+Further, there exists a distribution $D$ on $\R^d$ that is $\paren{\alpha+\epsilon}$-anti-concentrated for every $\epsilon >0$ but there is no algorithm for $\frac{\alpha}{2}$-approximate list-decodable regression for $\Lin_D(\alpha,\ell^*)$  that returns a list of size $<d$. 
+\end{theorem}
+For our efficient algorithms, we need a \emph{certified} version of the anti-concentration condition. 
+To handle additive noise of variance $\zeta^2$, we need a control of $\Pr[ |\iprod{x,v}| \leq \zeta]$. 
+Thus, we extend our notion of anti-concentration and then define a \emph{certified} analog of it:
+\begin{definition}[Certifiable Anti-Concentration] \label{def:certified-anti-concentration}
+A random variable $Y$ has a $k$-\emph{certifiably} $(C,\delta)$-anti-concentrated distribution if there is a univariate polynomial $p$ satisfying $p(0) = 1$ such that there is a degree $k$ sum-of-squares proof of the following two inequalities: 
+\begin{enumerate} 
+\item $\forall v$, $\langle Y,v\rangle^2 \leq \delta^2 \E \langle Y,v\rangle^2$ implies $(p(\langle Y,v\rangle) -1)^2\leq \delta^2$.
+\item $\forall v$, $\|v\|_2^2 \leq 1$ implies  $\E p^2(\left \langle Y,v\rangle \right) \leq C\delta$.
+\end{enumerate}
+\end{definition} 
+Intuitively, certified anti-concentration asks for a \emph{certificate} of the anti-concentration property of $Y$ in the ``sum-of-squares'' proof system (see Section~\ref{sec:preliminaries} for precise definitions). SoS is a proof system that reasons about  polynomial inequalities. Since the ``core indicator'' $\1(|\iprod{x,v}| \leq \delta)$ is not a polynomial, we phrase the condition in terms of an approximating polynomial $p$.
+\Pnote{seems like it would be nice to have some explanation for the properties of the polynomial asked for in this definition...}
+We are now ready to state our main result.
+\begin{restatable}[List-Decodable Regression]{theorem}{main} \label{thm:main}
+For every $\alpha, \eta > 0$ and a $k$-certifiably $(C,\alpha^2 \eta^2/10C)$-anti-concentrated distribution $D$ on $\R^d$, there exists an algorithm that takes input a sample generated according to $\Lin_D(\alpha,\ell^*)$ and outputs a list $L$ of size $O(1/\alpha)$ such that there is an $\ell \in L$ satisfying $\| \ell - \ell^*\|_2 < \eta$ with probability at least $0.99$ over the draw of the sample. The algorithm needs a sample of size $n = (kd)^{O(k)}$ and runs in time $n^{O(k)} = (kd)^{O(k^2)}$.
+\end{restatable} 
+\begin{remark}[Tolerating Additive Noise]
+For additive noise of variance $\zeta^2$ in the inlier labels, our algorithm, in the same running time and sample complexity, outputs a list of size $O(1/\alpha)$ that contains an $\ell$ satisfying $\|\ell-\ell^*\|_2 \leq \frac{\zeta}{\alpha} + \eta$. Since we normalize $\ell^*$ to have unit norm, this guarantee is meaningful only when $\zeta \ll \alpha$. %It is not clear if better noise-tolerance is possible for list-decodable regression.
+\end{remark}
+
+\begin{remark}[Exponential Dependence on $1/\alpha$]
+List-decodable regression algorithms immediately yield algorithms for mixed linear regression (MLR) without any assumptions on the components. The state-of-the-art algorithm for MLR with gaussian components~\cite{DBLP:conf/colt/LiL18} has an exponential dependence on $k=1/\alpha$ in the running time in the absence of strong pairwise separation or small condition number of the components. Liang and Liu~\cite{DBLP:conf/colt/LiL18} (see Page 10) use the relationship to learning mixtures of $k$ gaussians (with an $\exp(k)$ lower bound~\cite{DBLP:conf/focs/MoitraV10}) to note that algorithms with polynomial dependence on $1/\alpha$ for MLR and thus, also for list-decodable regression might not exist. 
+\end{remark}
+
+
+\paragraph{Certifiably anti-concentrated distributions} In Section~\ref{sec:certified-anti-concentration}, we show certifiable anti-concentration of some well-studied families of distributions. This includes the standard gaussian distribution and more generally any anti-concentrated spherically symmetric distribution with strictly sub-exponential tails. We also show that simple operations such as scaling, applying well-conditioned linear transformations and sampling preserve certifiable anti-concentration. This yields:
+\begin{corollary}[List-Decodable Regression for Gaussian Inliers]
+For every $\alpha, \eta > 0$ there's an algorithm for list-decodable regression for the model $\Lin_D(\alpha,\ell^*)$ with $D = \cN(0,\Sigma)$ with $\lambda_{\max}(\Sigma)/\lambda_{min}(\Sigma) = O(1)$ that needs $n = (d/\alpha \eta)^{O\left(\frac{1}{\alpha^4 \eta^4}\right)}$  samples and runs in time $n^{O\left(\frac{1}{\alpha^4 \eta^4}\right)} = (d/\alpha \eta)^{O\left(\frac{1}{\alpha^8 \eta^8}\right)}$.
+\end{corollary} 
+
+We note that certifiably anti-concentrated distributions are more restrictive compared to the families of distributions for which the most general robust estimation algorithms work~\cite{2017KS,KothariSteinhardt17,DBLP:conf/colt/KlivansKM18}. To a certain extent, this is inherent. The families of distributions considered in these prior works do not satisfy anti-concentration in general.  And as we discuss in more detail in Section~\ref{sec:overview}, anti-concentration is information-theoretically \emph{necessary} (see Theorem~\ref{thm:main-lower-bound}) for list-decodable regression. This surprisingly rules out families of distributions that might appear natural and ``easy'', for example, the uniform distribution on $\zo^n$. In fact, our lower bound shows the impossibility of even the ``easier'' problem of mixed linear regression on this distribution.
+
+We rescue this to an extent for the special case when $\ell^*$ in the model $\Lin(\alpha,\ell^*)$ is a "Boolean vector", i.e., has all coordinates of equal magnitude. Intuitively, this helps because  while the the uniform distribution on $\zo^n$ (and more generally, any discrete product distribution) is badly anti-concentrated in sparse directions, they are well anti-concentrated~\cite{ErdosLittlewoodOfford} in the directions that are far from any sparse vectors. 
+
+As before, for obtaining efficient algorithms, we need to work with a \emph{certified} version (see Definition~\ref{def:certified-anti-concentration-Boolean}) of such a restricted anti-concentration condition. As a specific Corollary (see Theorem~\ref{thm:Booleanmain} for a more general statement), this allows us to show:
+\begin{theorem}[List-Decodable Regression for Hypercube Inliers] \label{thm:boolcube}
+For every $\alpha, \eta > 0$ there's an $\eta$-approximate algorithm for list-decodable regression for the model $\Lin_D(\alpha,\ell^*)$ with $D$ is uniform on $\zo^d$ that needs $n = (d/\alpha \eta)^{O(\frac{1}{\alpha^4 \eta^4})}$  samples and runs in time $n^{O(\frac{1}{\alpha^4 \eta^4})} = (d/\alpha \eta)^{O(\frac{1}{\alpha^8 \eta^8})}$.
+\end{theorem} 
+
+In Section~\ref{sec:hypercube}, we obtain similar results for general product distributions. It is an important open problem to prove certified anti-concentration for a broader family of distributions. % In particular, this yields a $d^{O(\frac{1}{\alpha^2 \eta^2})}$-sample and $d^{O(\frac{1}{\alpha^4 \eta^4})}$-time algorithm for list-decodable regression when $D$ is the uniform distribution on the Boolean hypercube/solid hypercube. 
+
+
+\subsection{Concurrent Work}
+% % The model of {\em list-decodable} learning was introduced by Balcan et al. \cite{DBLP:conf/stoc/BalcanBV08} and recent works have given the first efficient list-decodable learning algorithms for {\em unsupervised} learning problems such as mean estimation and learning mixture models~\cite{KothariSteinhardt17,DBLP:conf/stoc/DiakonikolasKS18,DBLP:conf/stoc/CharikarSV17}.  
+% While solving linear regression in various noise models is a heavily studied topic, most papers consider the setting where only the labels have been corrupted (see e.g., \cite{DBLP:conf/nips/Bhatia0KK17,conf/soda/KarmalkarP19}).  %The first efficient algorithms for linear regression in the robust setting (where a fraction of the both the labels and locations of the points can be arbitrarily corrupted) were only recently given by \cite{DBLP:conf/colt/KlivansKM18,conf/soda/DiakonikolasKS19,journals/corr/abs-1803-02815,journals/corr/abs-1802-06485} under various assumptions on the marginal distribution.  Those works require the noise rate to be less than a small constant (roughly $.1$).  
+In an independent and concurrent work, Raghavendra and Yau have given similar results for list-decodable linear regression and also use the sum-of-squares paradigm \cite{RY19}.
+
+% \subsection{Our Techniques}
+
+% We emphasize two key technical innovations of this work.  The first is a general framework for list-decodable learning using the sum-of-squares approach (a prior work by Kothari and Steinhardt \cite{KothariSteinhardt17} used a sum of squares approach for list-decodable learning of mixture models, but the solution is highly specialized for their particular application).   
+
+% More concretely, we introduce a {\em general method} of rounding SDP solutions in the high noise regime: we associate a weight variable to each training point and interpret a particular point's weight as a "vote" for its guess of the unknown linear function.  This induces a probability distribution on linear functions and repeatedly sampling from this distribution results in our list of candidate solutions. 
+
+% Our second contribution is a translation of the notion of anti-concentration into the sum-of-squares proof system.  All recent work on robust learning requires a bounded moment condition on the marginal distribution, and this is straightforward to encode using polynomial inequalities.  Encoding anti-concentration, however, is more challenging.  We use a custom polynomial approximator for an indicator function on the real line, and show that the required properties of this polynomial can be expressed via sum-of-squares. 
+
+
+

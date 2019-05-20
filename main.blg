@@ -1,0 +1,104 @@
+This is BibTeX, Version 0.99d (TeX Live 2018)
+Capacity: max_strings=100000, hash_size=100000, hash_prime=85009
+The top-level auxiliary file: main.aux
+The style file: amsalpha.bst
+Database file #1: bib/mathreview.bib
+Database file #2: bib/dblp.bib
+Database file #3: bib/custom.bib
+Repeated entry---line 9 of file bib/custom.bib
+ : @inproceedings{DBLP:conf/nips/Zhong0D16
+ :                                        ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 25 of file bib/custom.bib
+ : @article{DBLP:journals/corr/BalakrishnanWY14
+ :                                             ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 58 of file bib/custom.bib
+ : @inproceedings{DBLP:conf/aistats/SedghiJA16
+ :                                            ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 181 of file bib/custom.bib
+ : @inproceedings{DBLP:conf/stoc/BalcanBV08
+ :                                         ,
+I'm skipping whatever remains of this entry
+Warning--I'm ignoring conf/soda/DiakonikolasKS19's extra "booktitle" field
+--line 389 of file bib/custom.bib
+Database file #4: bib/scholar.bib
+Database file #5: bib/main.bib
+A bad cross reference---entry "DBLP:conf/colt/KlivansKM18"
+refers to entry "DBLP:conf/colt/2018", which doesn't exist
+A bad cross reference---entry "DBLP:conf/stoc/DiakonikolasKS18"
+refers to entry "DBLP:conf/stoc/2018", which doesn't exist
+A bad cross reference---entry "DBLP:conf/nips/Bhatia0KK17"
+refers to entry "DBLP:conf/nips/2017", which doesn't exist
+A bad cross reference---entry "conf/soda/KarmalkarP19"
+refers to entry "conf/soda/2019sosa", which doesn't exist
+A bad cross reference---entry "DBLP:conf/colt/ChenYC14"
+refers to entry "DBLP:conf/colt/2014", which doesn't exist
+A bad cross reference---entry "DBLP:conf/colt/LiL18"
+refers to entry "DBLP:conf/colt/2018", which doesn't exist
+A bad cross reference---entry "DGJSV09"
+refers to entry "DBLP:conf/focs/2009", which doesn't exist
+Warning--I didn't find a database entry for "DBLP:conf/colt/2014"
+Warning--I didn't find a database entry for "DBLP:conf/colt/2018"
+Warning--I didn't find a database entry for "conf/soda/2019sosa"
+Warning--I didn't find a database entry for "DBLP:conf/nips/2017"
+Warning--I didn't find a database entry for "DBLP:conf/stoc/2018"
+Warning--I didn't find a database entry for "DBLP:conf/focs/2009"
+Warning--missing pages in journals/corr/AwasthiBL13
+Warning--missing pages in DBLP:journals/corr/BalakrishnanWY14
+Warning--missing pages in DBLP:journals/corr/DiakonikolasKKL16
+Warning--missing pages in DBLP:journals/corr/DiakonikolasKK017a
+Warning--missing pages in journals/corr/abs-1803-02815
+Warning--missing pages in DBLP:journals/corr/DiakonikolasKS17
+Warning--missing note in HopkinsLi17
+Warning--missing note in KothariSteinhardt17
+Warning--missing pages in 2017KS
+Warning--missing pages in journals/corr/abs-1802-06485
+Warning--missing journal name in MR0426989
+Warning--missing journal, volume, and year in MR0426989
+Warning--missing journal name in HermiteNum
+Warning--missing journal, volume, and year in HermiteNum
+Warning--missing pages in HermiteNum
+You've used 57 entries,
+            2624 wiz_defined-function locations,
+            941 strings with 14952 characters,
+and the built_in function-call counts, 25507 in all, are:
+= -- 2449
+> -- 1171
+< -- 19
++ -- 411
+- -- 402
+* -- 2047
+:= -- 3915
+add.period$ -- 57
+call.type$ -- 57
+change.case$ -- 374
+chr.to.int$ -- 55
+cite$ -- 72
+duplicate$ -- 1085
+empty$ -- 1950
+format.name$ -- 466
+if$ -- 5333
+int.to.chr$ -- 3
+int.to.str$ -- 0
+missing$ -- 110
+newline$ -- 182
+num.names$ -- 171
+pop$ -- 418
+preamble$ -- 1
+purify$ -- 430
+quote$ -- 0
+skip$ -- 958
+stack$ -- 0
+substring$ -- 1643
+swap$ -- 286
+text.length$ -- 19
+text.prefix$ -- 12
+top$ -- 0
+type$ -- 448
+warning$ -- 15
+while$ -- 250
+width$ -- 64
+write$ -- 634
+(There were 11 error messages)

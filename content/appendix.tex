@@ -1,0 +1,366 @@
+
+
+
+%!TEX root = ../main.tex
+\section{Polynomial Approximation for Core-Indicator}
+\label{appendix:polyfact}
+
+
+The main result of this section is a low-degree polynomial approximator for the function $\1(|x| < \delta)$ with respect to all distributions that have asymptotically lighter-than-exponential tails.  
+
+
+\begin{lemma}\label{lem:univppty_box} 
+Let $D$ be a distribution on $\R$ with mean $0$, variance $\sigma^2 \leq 1$ and satisfying:
+\begin{enumerate}
+    \item \textbf{Anti-Concentration:} For all $\eta > 0$, $\Pr_{x \sim D} [ |x| < \eta \sigma] \leq C\eta$, and,
+    \item \textbf{Tail bound:} $\Pr[ |x| \geq t \sigma] \leq e^{-\frac{t^{2/k}}{C}}$ for $k <2$ and all $t$,
+%    \item \textbf{Tail bounds:} For some constants $C,C' > 0$ and all $t$ and $k \in \mathbb{N}$, $\Pr[ |x| \geq t \sigma] \leq C' e^{-\frac{t^{2/k}}{C}}$. 
+\end{enumerate} 
+for some $C>1$. Then, for any $\delta > 0$, there is a $d = O\Paren{\frac{\log^{(4+k)/(2-k)}(1/\delta)}{\delta^{2/(2-k)}}}= \tilde{O}\left(\frac{1}{\delta^{2/(2-k)}}\right)$ and an even polynomial $q(x)$ of degree $d$ such that $q(0) = 1$, $q(x)= 1 \pm \delta$ for all $|x| \leq \delta$ and $\sigma^2 \cdot \E_{x \sim D}\left[ q^2(x) \right] \leq 10C\delta$.
+\end{lemma}
+
+Before proceeding to the proof, we note that the bounds on the degree above are tight up to poly logarithmic factors for the gaussian distribution. 
+% In particular, when $D = \cN(0,\sigma^2)$, degree of the polynomial constructed in the lemma above is $\tilde{O}(1/\delta^2)$. 
+% We prove a matching (up to poly log factors) lower bound in the lemma below.  % $\delta$ in the above lemma is tight up to a logarithmic factor.
+
+\begin{lemma} \label{lem:tightness-gaussian}
+For every polynomial $p$ of degree $d$ such that $p(0)= 1$, $\E_{x \sim \cN(0,1)} [ p^2(x)] = \Omega\left(\frac{1}{\sqrt{d}} \right)$. Further, there is a polynomial $p_*$ of degree $d$ such  that $p_{*}(0) = 1$ and $\E_{x \sim \cN(0,1)} p_{*}^2(x) = \Theta\left(\frac{1}{\sqrt{d}}\right)$.
+\end{lemma}
+
+Our construction of the polynomial is based on standard techniques in approximation theory for constructing polynomial approximators for continuous functions over an interval. Most relevant for us are various works of Eremenko and Yuditskii~\cite{MR2441914,MR2837087,MR2346548} and Diakonikolas, Gopalan, Jaiswal, Servedio and Viola~\cite{DGJSV09} on such constructions for the sign function on the interval $[-1,a] \cup [a,1]$ for $a >0$. We point the reader to the excellent survey of this beautiful line of work by Lubinsky~\cite{2007math......1099L}. 
+
+\begin{fact}[Theorem 3.5 in ~\cite{DGJSV09}]
+\label{fact:boxpoly}
+Let $0 < \eta < 0.1$, then there exist constants $C, c$ such that for 
+\[ a:= \eta^2 / C\log(1/\eta)\text{ and }K = 4c\log(1/\eta)/a + 2 < O(\log^2(1/\eta)/\eta^2)\]
+there is a polynomial $p(t)$ of degree $K$ satisfying 
+\begin{enumerate}
+    \item $p(t) > \sign(t) > -p(-t)$ for all $t \in \mathbb{R}$.
+    \item $p(t) \in [\sign(t), \sign(t) + \eta]$ for $t \in [-1/2, -2a] \cup [0, 1/2]$.
+    \item $p(t) \in [-1, 1+\eta]$ for $t \in (-2a, 0)$
+    \item $|p(t)| \leq 2 \cdot (4t)^K$ for all $t > \frac{1}{2}$. 
+\end{enumerate}
+\end{fact}
+
+We will  also rely on the following elementary integral estimate.
+\begin{lemma}[Tail Integral] \label{lem:tail-estimate}
+\[\int_{[L, \infty]} \exp\left(-\frac{x^{2/k}}{C}\right) x^{2d}  dx < \exp\left(-\frac{L^{2/k}}{C}\right) ((L)^{4d} + (16kd)^{kd}) \mper \]
+\end{lemma}
+\begin{proof}
+We first prove the claim for $k =1$. 
+Let $y = x-L$. The,  $\int_{L}^{\infty} e^{-x^2} x^{2d} dx = \int_{0}^{\infty} e^{-(y+L)^2} (y+L)^{2d} dy$.
+We now use that $y^2 + L^2  \leq (y+L)^2$ for all $y \geq 0$ and $(y+L)^{2d} \leq 2^{2d} (y^{2d} + L^{2d})$ to upper bound the integral above by: $e^{-L^2} L^{2d}  + 2^{2d} e^{-L^2} \int_{0}^{\infty} e^{-y^2} y^{2d}$. Using $\int_{0}^{\infty} e^{-y^2} y^{2d} < (4d)^{d}$ gives a bound of $e^{-L^2} (L^{2d}+ (8d)^d)$. 
+
+For larger $k$, we substitute $y = x^{1/k}$ and write the integral in question as $\int_{L^{1/k}}^{\infty} e^{-y^2} y^{2kd-(k-1)} dy$. 
+Applying the calculation from the above special case, this integral is upper bounded by: $e^{-L^{2/k}} (L^{4d} + (16kd)^{kd})$.
+\end{proof}
+
+
+
+
+
+\begin{proof}[Proof of Lemma~\ref{lem:univppty_box}]
+Let $p(x)$ be the degree $d < O\left( \frac{L\log^2(1/\delta)}{\delta}\right)$ polynomial from Fact~\ref{fact:boxpoly}. We then construct a polynomial $q(x)$ that will be close to $0$ in the range $[\delta, L]$ and $[-L, -\delta]$ and close to $1$ in the range $[-\delta, \delta]$. Our polynomial $q$ is obtained by shifting and appropriately scaling two copies of $p$. 
+\[
+    q(x) = \frac{p\left(a+\frac{x}{4L}\right) + p\left(-(a+\frac{x}{4L})\right) - 1}{p\left(a\right) + p\left(-a\right) - 1}\\
+\]
+Then, $q(0) = 1$. It further satisfies:
+\begin{enumerate}
+    \item $q(x) \in [0, C \sqrt{\delta/L}]$ for $x \in [\delta, L]\cup[-L,\delta]$.
+    \item $q(x) \in [1-C  \sqrt{\delta/L}, 1+ \sqrt{\delta/L}]$ for $x \in [-\delta, \delta]$.
+    \item $q(x) \in [0, 1+ \sqrt{\delta/L}]$ for $x \in [-3\delta, -\delta]\cup[\delta, 3\delta]$.
+    \item $|q(x)| < 4 \cdot (4x)^{t}$ for $|x| > L$
+\end{enumerate}
+ % < 4 \cdot (4x)^d$ for $|x| > L$
+We now prove the bound the $\E p^2$. We do this by providing upper bounds on the contributions to $\sigma^2 \cdot \E_{x \sim \calD}\left[ q^2(\sigma x) \right]$ from the disjoint sets with different guarantees below. Since we are going to evaluate $q(\sigma x)$ the intervals will be scaled by $\sigma$. 
+
+% The contributions from the regions $\frac{1}{\sigma}[\delta^2, L]$ and $\frac{1}{\sigma}[-\delta^2, \delta^2]$ can be naively upper bounded by the maximum value that the polynomial can take here times the probability of landing in these regions. The first of these contributes $\sigma \cdot \frac{\delta^2}{L} \cdot \left(L - \delta^2\right) \leq \delta^2$, and using anticoncentration, the second region contributes $ \left(1+\frac{\delta}{\sqrt{L}}\right)^2 \cdot 2C \delta^2 \leq 4C \delta^2$. The region $\frac{1}{\sigma} [\delta^2, 3\delta^2]$ can be bounded similarly to get an upper bound of $2\left(1+\frac{\delta}{\sqrt{L}}\right)^2 \sigma^2 \delta^2 \leq 4 \delta^2$.
+
+
+% $r(x)$ is an even polynomial that has the following properties.
+
+% \begin{enumerate}
+%     \item $r(x) \in [0, \delta]$ for $x \in [3a,1/2-a]\cup[a-1/2,-3a]$.
+%     \item $r(x) \in [1, 1+\delta]$ for $x \in [-a, a]$.
+%     \item $r(x) \in [0, 1+\delta]$ for $x \in [-3a, -a]\cup[a, 3a]$.
+%     \item $|r(x)| < 4 \cdot (4x)^K$ for $|x| > 1/2-a$
+% \end{enumerate}
+
+% To get a polynomial that is close to $0$ over $[\delta, L]$ for $L > 1$ we scale $\delta$ and $x$ in the above polynomial. Since $a < 1/4$, the polynomial $g(x) = r(x/4L)$ has the guarentees
+
+% \begin{enumerate}
+%     \item $g(x) \in [0, \delta]$ for $x \in [12La, L]\cup[-L,-12La]$.
+%     \item $g(x) \in [1, 1+\delta]$ for $x \in [-4La, 4La]$.
+%     \item $g(x) \in [0, 1+\delta]$ for $x \in [-12La, -4La]\cup[4La, 12La]$.
+%     \item $|g(x)| < 4 \cdot (4x)^d$ for $|x| > L$
+% \end{enumerate}
+
+% Using the fact that $|a| < \delta^2$ for $\delta < 0.1$, we see that re-scaling $\delta$ to $\delta/\sqrt{L}$ gives us a polynomial with degree $d'$ such that for $t < O\left( \frac{L\log^2(1/\delta)}{\delta^2}\right)$ we have
+
+% \begin{enumerate}
+%     \item $g'(x) \in [0, \delta/\sqrt{L}]$ for $x \in [\delta^2, L]\cup[-L,\delta^2]$.
+%     \item $g'(x) \in [1, 1+\delta/\sqrt{L}]$ for $x \in [-\delta^2, \delta^2]$.
+%     \item $g'(x) \in [0, 1+\delta/\sqrt{L}]$ for $x \in [-3\delta^2, -\delta^2]\cup[\delta^2, 3\delta^2]$.
+%     \item $|g'(x)| < 4 \cdot (4x)^{t}$ for $|x| > L$
+% \end{enumerate}
+
+% Setting the polynomial to be $q(x) = g'(x)/g'(0)$ we get the guarantees for $q$
+
+% \begin{enumerate}
+%     \item $q(x) \in [0, C \delta/\sqrt{L}]$ for $x \in [\delta^2, L]\cup[-L,\delta^2]$.
+%     \item $q(x) \in [1-C \delta/\sqrt{L}, 1+\delta/\sqrt{L}]$ for $x \in [-\delta^2, \delta^2]$.
+%     \item $q(x) \in [0, 1+\delta/\sqrt{L}]$ for $x \in [-3\delta^2, -\delta^2]\cup[\delta^2, 3\delta^2]$.
+%     \item $|q(x)| < 4 \cdot (4x)^{t}$ for $|x| > L$
+%     \item $q(0) = 1$
+% \end{enumerate}
+
+% We now prove the bound the $\E p^2$. We do this by providing upper bounds on the contributions to $\sigma^2 \cdot \E_{x \sim \calD}\left[ q^2(\sigma x) \right]$ from the disjoint sets with different guarantees below. Since we are going to evaluate $q(\sigma x)$ the intervals will be scaled by $\sigma$. For any fixed $k$ we have the following
+
+The contributions from the regions $\frac{1}{\sigma}[\delta, L]$ and $\frac{1}{\sigma}[-\delta, \delta]$ can be naively upper bounded by the maximum value that the polynomial can take here times the probability of landing in these regions. The first of these contributes $\sigma \cdot \frac{\delta}{L} \cdot \left(L - \delta\right) \leq \delta$, and using anticoncentration, the second region contributes $ \left(1+\sqrt{\frac{\delta}{L}}\right)^2 \cdot 2C \delta \leq 4C \delta$. The region $\frac{1}{\sigma} [\delta, 3\delta]$ can be bounded similarly to get an upper bound of $2\left(1+\sqrt{\frac{\delta}{L}}\right)^2 \sigma^2 \delta \leq 4 \delta$. To finish, we use Lemma~\ref{lem:tail-estimate} to upper bound the contribution to $\E p^2$ from the tail:
+\begin{align*}
+    \sigma^2 C' \int_{\frac{1}{\sigma} [L, \infty]} q^2(\sigma x)\exp\left(-\frac{x^{2/k}}{C}\right) dx &\lesssim \sigma^{2+d}  4^d\exp\left(-\frac{1}{C} \cdot \left(\frac{L}{\sigma}\right)^{2/k}\right) ((L/\sigma)^{4d} + (16kd)^{kd})\\
+    &\lesssim \exp\left( 2d + 4d\log\left(\frac{L}{\sigma}\right) -\frac{1}{C} \cdot \left(\frac{L}{\sigma}\right)^{2/k} + kd \log(16kd)\right)
+    % \\
+    % &= \sigma^2 \sum_{i=1}^{\infty} \int_{\frac{L}{\sigma}[i, i+1]} (4\sigma x)^{d} \exp\left(-\frac{x^{2}}{C}\right) dx\\
+    % &\leq  \sigma^2 \sum_{i=1}^{\infty} (4Li)^{d} \exp\left(\frac{1}{C}\cdot \left(\frac{Li}{\sigma}\right)^{2} \right)\\
+    % &=\sigma^2 \sum_{i=1}^{\infty} \exp\left(d\log(4Li) - \frac{1}{C}\cdot \left(\frac{Li}{\sigma}\right)^{2}\right)\\
+\end{align*}
+We choose $L$ satisfying $10 d \log(d)+ 4d\log(\frac{L}{\sigma}) -\frac{1}{C} \cdot (\frac{L}{\sigma})^{2/k} < 2 \log(1/\delta)$.
+
+Since $d = O\left( \frac{L\log^2(1/\delta)}{\delta}\right)$, $k < 2$, and $\sigma < 1$ we can now choose $L = \left(\frac{C100\log^{3}(1/\delta)}{\delta}\right)^{k/(2-k)}$ to satisfy the inequality above and to get $d \lesssim \frac{\log^{2 + 3k/(2-k)}(1/\delta)}{\delta^{1 + k/(2-k)}}$.
+ When $k =1$ we get $d = \tilde{O}(1/\delta^2)$. Since $\sigma < 1$ in all the above calculations, we get our result by re-scaling $\delta$. 
+
+
+
+% \[\frac{2L\log^2(1/\delta)}{\delta} + \frac{4L\log^2(1/\delta)}{\delta} \cdot \log\left(\frac{L}{\sigma}\right) -\frac{1}{C} \cdot \left(\frac{L}{\sigma}\right)^{2/k} + \frac{kL\log^2(1/\delta)}{\delta} \log \left(\frac{16 k L\log^2(1/\delta)}{\delta}\right ) < 2 \log(1/\delta) \] 
+
+% Observe that it is sufficient to find an $L$ satisfying 
+
+% \[ \frac{2L\log^2(1/\delta)}{\delta} + \frac{8L\log^2(1/\delta)}{\delta} \cdot \log\left(\frac{L}{\sigma}\right) -\frac{1}{C} \cdot \left(\frac{L}{\sigma}\right)^{2/k} < 2 \log(1/\delta) \]
+
+\end{proof} 
+
+% For completeness, we note that for the Gaussian distribution one can perform a more careful calculation and get the following lemma that removes log factors. The proof of this lemma is just a calculation using the definition of $q$ and the fact that the Hermite polynomials are \Pnote{this sentence seems to be trailing off.}
+
+
+% \begin{lemma}
+% Let $\R_d[x]$ denote the set of degree $d$ polynomials over the reals, then 
+% \[ \min_{p \in \R_d[x], p(0)=1} \left\{ \E_{x \sim N(0, 1)} [p^2(x)] \right\} \geq \Omega\left(\frac{1}{\sqrt{d}}\right) \] 
+% \end{lemma}
+We now complete the proof of Lemma~\ref{lem:tightness-gaussian}.
+
+\begin{proof} [Proof of Lemma~\ref{lem:tightness-gaussian}]
+Any polynomial $p$ of degree $d$ can be written as $p(x) = \sum_{i = 1}^d \alpha_i h_i(x)$ where $h_i$ denote the hermite polynomials of degree $i$, satisfying $\E_{x \sim \cN(0,1)} h_i = 0$ and $\E_{x \sim N(0,1)} [h^2_i(x)] = 1$. Since $p(0) =  1$, using Cauchy-Schwartz inequality, we obtain:
+\begin{align*}
+\E_{x \sim N(0,1)} [p^2(x)] \cdot \sum_{i=1}^d h_i^2(0) &= \left( \sum_{i=1}^d \alpha_i^2\right) \cdot \left(\sum_{i=1}^d h_i^2(0)\right) \geq \left(\sum_{i=1}^d \alpha_i h_i(0) \right)^2 \geq 1 
+\end{align*}
+Further, observe that for the polynomial $p_{*}(x)=  \frac{1}{\sum_i h_i^2(0)} \sum_{i} h_i(0) h_i(x)$, the above inequality is tight.  
+Using that $h_{2i}(0) = \frac{(2i-1)!!}{\sqrt{(2i)!}}$ and $h_i(0) = 0$ if $i$ is odd, (see, for e.g., \cite{HermiteNum}), we have:
+\begin{align*}
+    \E_{x \sim N(0,1)} [p^2(x)] &\geq \E_{x \sim \cN(0,1)} p_*^2(x)=\left(\sum_{i=1}^d h_i^2(0)\right)^{-1} = \left(\sum_{i=1}^{d/2} \left(\frac{(2i-1)!!}{\sqrt{(2i)!}}\right)^2\right)^{-1}\\
+    & = \left(\sum_{i=1}^{d/2} \frac{(2i)!}{2^{2i} i!^2} \right)^{-1} = \left( \sum_{i=1}^{d/2} \binom{2i}{i} \cdot \frac{1}{2^{2i}} \right)^{-1} = \Theta\left(\sum_{i=1}^{d/2} \frac{1}{\sqrt{i}}\right)^{-1} = \Theta\left(\sqrt{d} \right)^{-1}.
+\end{align*}  
+\end{proof}
+
+\section{Brute-force search can generate a $\exp(d)$ size list} 
+
+
+
+% In this section, we show that without having some condition on the samples, it is impossible for \emph{any} algorithm to provide an $O(1/\alpha)$-sized list of candidates. i.e. without having some condition on the samples is necessary for information theoretic recovery. %\Pnote{We should start with the statement of the main result first.  Would be better if we don't use a new definition such as LFD..}
+In the following, we write $e_i$ to denote the vector with $1$ in the $i$th coordinate and $0$s in all others. 
+\begin{proposition}
+There exists a distribution $D$ on $\R^d$ and a model $\Lin_D(\alpha,\ell^*)$ such that for every $\alpha <1/2$, with probability at least $1-1/d$ over the draw of a $n$-size sample $\cS$ from $\Lin_D(\alpha,\ell^*)$, there exists a collection $\Sol \subseteq \Set{S \subseteq \cS \mid |S| = \alpha n}$ of size $\exp(d)$ and unit length vectors $\ell_S$ for every $S \in \Sol$ such that $\ell_S$ satisfies all equations in $S$ and for every $S \neq S' \in \Sol$, $\|\ell_S - \ell_{S'}\|_2 \geq 0.1 $. % such that for every $S \in \Sol$, there exists a $\ell_S \in \Sol$ linear functions $\ell_S$ such that $\ell_S$ satisfies 
+
+%There exists a sample $S \subset \R^d \times \R$ of $n$ points such that there exist $\Omega(\exp(\Omega(d)))$ soluble subsets $I \subset S$ such that $|I| = \alpha n$, and each of the solution vectors are pairwise $0.1$ apart.
+\label{prop:brute-force-doesn't-work}
+\end{proposition}
+\begin{proof}
+
+Let $D$ be the uniform distribution on $e_1, e_2, \ldots, e_d \in \R^d$. Let $\ell^* := \vec{1}/\sqrt{d}$ be the all-ones vector in $\R^d$ scaled by $1/\sqrt{d}$ and let $d$ samples be drawn from the uncorrupted distribution. These give us our inliers, $\cI = \{ (x_i, y_i) \}_{i=1}^{\alpha n}$. For the outliers, choose the following multiset $\cO :=$ $1/\alpha-1$ copies of $\{ (e_i, j) \mid i \in [d], j \in \{\pm 1/\sqrt{d}\}\}$. This is a sample set of size $2d/\alpha$. Any $a \in \{\pm1/\sqrt{d}\}^d$ is a valid candidate for a solution for this data. This is because for any such $a$, $\cI_a := \{ (e_i, a_i) \mid i \in [d] \} \subset S$ satisfies the following
+\begin{enumerate}
+    \item $\cI_a \subset S$, $|\cI_a| = d = \frac{\alpha}{2} |S|$ and 
+    \item for any $(x, y) \in \cI_a$, $y = \langle x, a \rangle$. 
+\end{enumerate}
+The Gilbert–Varshamov bound from coding theory now tells us that there are at least $\Omega(\exp(\Omega(d)))$ $\{0, 1\}$ vectors in $d$ dimensions that pairwise have a hamming distance of $0.1 \cdot d$. This transfers to the set $\{ \pm 1 /\sqrt{d} \}$ to give us that there are $\Omega(\exp(\Omega(d)))$ vectors in $\{ \pm 1 /\sqrt{d} \}$ that are pairwise $0.1$ apart in $2$-norm. 
+
+\end{proof}
+\SK{Commented out proposition statement for necessity of anticoncentration. Recall that this will in fact imply that for the boolean case there exists an information theoretic lower bound}
+
+% In this section, we show that without some condition on the samples, there might not exist an $O(1/\alpha)$-sized list of potential candidates for the true measurement vectors.  %\Pnote{We should start with the statement of the main result first.  Would be better if we don't use a new definition such as LFD..}
+
+% \begin{proposition} \label{prop:anti-concentration-is-necessary}
+% $\cD_{\epsilon}$ be the class of all distributions $D$ such that for every $D \in \cD_{\epsilon}$, $\max_{v:\|v\|_2 = 1} \Pr_D [\langle x,v \rangle = 0] \leq \epsilon$. Then, for every $\eta$, there's an $\eta$-approximate algorithm for list-decodable regression for samples drawn from $Lin_D(\alpha,n,\ell^*)$ for every $D \in \cD_{\eps}$ if and only if $\alpha > \epsilon$ for some constant $c > 1$. 
+% \end{proposition} 
+
+% \Pnote{The proof needs to be phrased a bit differently to prove the proposition as stated, I think.}
+% \begin{proof}
+% The ``if'' part is proven in Proposition~\ref{prop:identifiability}. To show the ``only if'' part, we will construct an $\alpha$-anti-concentrated distribution $D$ and a family of models $\Lin_{D}(\alpha,\ell_i^*)$ of size $\exp(\Omega(d))$ that are information-theoretically indistinguishable while for every $i \neq j$, $\|\ell^*_i - \ell^*_j\|_2 \geq 0.1$. 
+
+% Let $D$ be the distribution that outputs $e_i$ with probability $1/d$ for every $i \leq d$. 
+% Here, $e_i$ is the standard basis vector with $1$ in the $i$th coordinate and $0$ otherwise. 
+% Then, observe that for any $v$, $\Pr_{x \sim D} [\iprod{x,v} = 0] \geq $
+
+% Observe that the uniform distribution over $S := \{ (e_i, j) \mid i \in [d], j \in [1/\alpha] \}$ is $\alpha$-concentrated. This is because the total number of samples is $d/\alpha$, however any $d+1$ of these necessarily cannot lie on a subspace. Any $a \in [1/\alpha]^d$ is a valid candidate for a solution for this data. This is because for any such $a$, $\cI_a := \{ (e_i, a_i) \mid i \in [d] \}$ satisfies the following
+% \begin{enumerate}
+%     \item $\cI \subset S$ and 
+%     \item for any $(x, y) \in \cI_a$, $y = \langle x, a \rangle$. 
+% \end{enumerate}
+% Hence any list of candidates for $S$ needs to have length at least $|[1/\alpha]^d| = 1/\alpha^d$. 
+% \end{proof} 
+
+% If $\cI$ restricted to the $x$s satisfies anticoncentration, then there is a simple way to see that there exists a list of size $O(1/\alpha)$ that has all possible candidates. 
+
+
+% We first show that if $\alpha > \eps$, then it is possible to list-decode $Lin_D(\alpha,n,\ell^*)$. Note that it is possible to check the following for any $\alpha n$-sized subset $T$ of $S$ 
+% \begin{enumerate}
+%     \item $T$ is $\eps$-anticoncentrated. 
+%     \item There is a vector $v_T \in \R^d$ such that $\forall (x, y) \in T$, $\langle x, v_T\rangle = y$.
+% \end{enumerate}
+% The first condition can be checked by enumerating all $\eps \alpha n$ sized subsets of $T$ and checking that the measurements of each each subset are linearly independent. The second condition can be checked by trying to solve the system of linear equations defined by $T$. Let $C$ denote the set of $\alpha n$-sized subsets of $T$ that satisfy both the conditions above and let $L$ be the induced list, i.e.  
+% \[    C := \{ T \mid T \subset S, |T| = \alpha n, \text{T is satisfies conditions 1 and 2.} \} \]
+% and
+% \[L := \{ \ell_T \mid T \in C \}.\]
+% $L$ is the list we return. To see that this satisfies us, first note that $L$ contains $v^*$ since $\cI \in C$. We now show $|L| \leq 2/\alpha$. Suppose not, then there exist $> 2/\alpha$ elements of $C$ contributing distinct vectors. For any two such distinct elements $T_i$ and $T_j$ their intersection is of size at most $\eps \alpha n$, i.e. $|T_i \cap T_j| \leq \eps \alpha n$. This is because by anticoncentration, any subset of $T_i$ or $T_j$ of size $> \eps |T_i|$ fixes $\ell_{T_i}$ and $\ell_{T_j}$ and $\ell_{T_i} \neq \ell_{T_j}$. The total size of $S$ is lower bounded by the size of the union of $T_1 \dots T_{l}$. we observe the following contradiction
+% \begin{align*}
+%      n &= |S| \geq |T_1| + \sum_{i=2}^{2/\alpha-1} \left(|T_i| -  \sum_{j < i} |T_i \cap T_j|\right) \geq \alpha n + \sum_{i=1}^{2/\alpha - 1} (\alpha n - \eps n) \\
+%      &\geq n - \frac{1}{2} \cdot (4 (\eps/\alpha) n) \geq n \left( 1 - \frac{1}{2} \frac{1.5 \eps \alpha}{\alpha^2} \right) > n
+% \end{align*}
+
+
+
+
+
+% \begin{definition}
+% We define a finite set $X \subset \R^d$ to be \emph{locally full-dimensional} if every subset of $d+1$ points of this set is linearly independent. 
+
+% We say that a finite set of samples $S \subset \R^d \times \R$ is \emph{locally full-dimensional in its measurements} if the projection of $S$ onto its first $d$ coordinates is locally full dimensonal.
+% \end{definition}
+
+% Observe that local full dimensionality is the right information theoretic equivalent of anticoncentration. Indeed, we said that a set of vectors $\{ x_1, \dots, x_n \} \in \R^d$ is anticoncentrated if for all vectors $v$, and any subset $E \subset [n]$ s.t. $|E|=\alpha n$, $\sum_{i \in E} \langle x_i, v \rangle^2$ is strictly lower bounded by some positive quantity. When the required lower bound is $0$ this is exactly the same as the notion above. 
+
+% \begin{theorem} \label{prop:anti-concentration-is-necessary}
+% There exists a set of samples $S = \{ (x_i, y_i) \mid i \in [n]\} \subset \R^d \times \R$ such that there are $1/\alpha^d$ distinct vectors, each of which satisfy the condition that there are $\alpha n$. 
+% \end{theorem} 
+% \begin{proof} 
+
+% \begin{theorem}
+% Let $n \geq 100 d/\alpha^2$ and $S = \{ (x_i, y_i) \mid i \in [n] \} \subset \R^d \times \R$ be a set of samples, $\alpha n$ of which are inliers $\cI$ satisfying $\langle x_i, v^*\rangle = y_i$. Then, there exists a list $L$ of size $O(1/\alpha)$ such that $v^*$ is an element of $L$ \emph{if and only if} $\cI$ is known to satisfy local full-dimensionality in its measurements. 
+% \end{theorem}
+% \begin{proof} 
+% % Observe that if a finite set of points $X \subset \R^d$ satisfies 
+% % \[ \Pr[|\langle x, v \rangle| = 0] \leq 
+% % \SK{EDITING} 
+% \Pnote{commented this out for compiling.}
+
+
+% First note that it is possible to check the following for any $\alpha n$-sized subset $T$ of $S$ 
+% \begin{enumerate}
+%     \item $T$ is locally full dimensional in its measurements.
+%     \item There is a vector $v_T \in \R^d$ such that $\forall (x, y) \in T$, $\langle x, v_T\rangle = y$.
+% \end{enumerate}
+% The first condition can be checked by enumerating all $d+1$ sized subsets of $T$ and checking that the measurements of each each subset are linearly independent. The second condition can be checked by trying to solve the system of linear equations defined by $T$. Let $C$ denote the set of $\alpha n$-sized subsets of $T$ that satisfy both the conditions above and let $L$ be the induced list, i.e.  
+% \[    C := \{ T \mid T \subset S, |T| = \alpha n, \text{T is satisfies conditions 1 and 2.} \} \]
+% and
+% \[L := \{ \ell_T \mid T \in C \}.\]
+% $L$ is the list we return. To see that this satisfies us, first note that $L$ contains $v^*$ since $\cI \in C$. We now show $|L| \leq 10/\alpha$. Suppose not, then there exist $10/\alpha$ elements of $C$ contributing distinct vectors. For any two such distinct elements $T_i$ and $T_j$ their intersection is of size at most $d$, i.e. $|T_i \cap T_j| \leq d$. This is because any $d+1$ elements of $T_i$ or $T_j$ are enough to fix $\ell_{T_i}$ and $\ell_{T_j}$ and $\ell_{T_i} \neq \ell_{T_j}$. The total size of $S$ is lower bounded by the size of the union of $T_1 \dots T_{10/\alpha}$. Since $n \geq 100d/\alpha^2$, we observe the following contradiction
+% \begin{align*}
+%      n &= |S| \geq |T_1| + \sum_{i=2}^{10/\alpha -1} \left(|T_i| -  \sum_{j < i} |T_i \cap T_j|\right) \geq \alpha n + \sum_{i=1}^{10/\alpha - 1} (\alpha n - id) \\
+%      &= 10 n - \frac{1}{2} \cdot (100 d/\alpha^2) \geq 9.5 n > n.
+% \end{align*}
+% To prove the converse, suppose $\cI$ is not known to satisfy local full dimensionality in its measurements. Then 
+% \end{proof} 
+
+% \section{Univariate polynomial by direct calculation}
+
+% Let $h_i(x)$ denote the degree-$i$, normalized Hermite polynomial. Then, 
+% \begin{lemma}\label{lem:univppty_gauss}
+% Let $p(x) := \sum_{i=1}^t h_{2i}(0) \cdot h_{2i}(x)$ and suppose $q(x) := p(x)/p(0)$, then for $\sigma \in [0, 1]$, \[\sigma^2 \cdot \E_{x \sim N(0,1)}\left[ q^2(\sigma x) \right] \lesssim \frac{1}{\sqrt{d}}.\]
+% % \begin{enumerate}
+% %     \item For $\sigma \in [0, 1]$, \[\sigma^2 \cdot \E_{x \sim N(0,1)}\left[ q^2(\sigma x) \right] \lesssim \frac{1}{\sqrt{d}}.\]
+% %     \item For $\sigma > 1$ \[\E_{x \sim N(0,1)} \left[ q^2(\sigma x) \right] \leq d\cdot (2\sigma)^{4d} \cdot \E_{x \sim N(0,1)} \left[ q^2(x)\right]. \] 
+% % \end{enumerate}
+% % This implies
+% % \[ \sigma^2 \cdot \E_{x \sim N(0,1)}\left[ q^2(\sigma x) \right] \lesssim \frac{1}{\sqrt{d}} + \sqrt{d} \cdot (2\sigma)^{4d+2}  \]
+% \end{lemma} 
+% \begin{proof} 
+% Rearranging, we see that this is the same as showing 
+% \[ \sigma^2 \cdot \E_{x \sim N(0,1)}\left[ p^2(\sigma x) \right] \lesssim \frac{p^2(0)}{\sqrt{t}}. \] 
+% Let $f(\sigma) =\sigma^2 \cdot \E_{x \sim N(0,1)}\left[ p^2(\sigma x) \right]$. We will observe that $f'(\sigma) \geq 0$ for all $\sigma \in [0, 1]$ and $\frac{f(1)}{p^2(0)} \lesssim \frac{1}{\sqrt{t}}$. An application of the product and chain rules gives us,
+
+% \[    \frac{d}{d\sigma} \left( \sigma^2 \cdot \E_{x \sim N(0,1)}\left[ p^2(\sigma x) \right] \right) = 2\sigma \cdot \E_{x \sim N(0,1)}\left[ p^2(\sigma x) \right] + 2\sigma^2 \cdot \E_{x \sim N(0,1)}\left[ p(\sigma x) p'(\sigma x) x \right] \]
+
+% We will now lower bound the second term. We will need the following fact about Hermite polynomials for this
+
+% \begin{fact}\label{fact:hermite_properties}
+% Let $h_n$ denote the degree $n$, normalized hermite polynomials, then for any $\sigma \in [0, 1]$
+% \begin{enumerate} 
+% \item $ h_n' (x) = \sqrt{n} h_{n-1}(x)$
+% \item $ h_{n+1}(x) = \frac{x}{\sqrt{n+1}} \cdot h_n(x)  - \sqrt{\frac{n}{n+1}}\cdot h_{n-1}(x) $
+% \item $h_{2i}(0) = (-1)^i \frac{(2i-1)!!}{\sqrt{(2i)!}}$
+% \item $\sign \left( \E_{x \sim N(0,1)} \left[h_{2i}(\sigma x) h_{2j}(\sigma x)\right]\right) = (-1)^{i+j}$
+% \item $h_{2t}(\sigma x) =  \sum_{i=0}^{t} \sigma^{2(t-i)}(\frac{\sigma^2 - 1}{2})^i \sqrt{\binom{2t}{2i} \cdot \binom{2i}{i}} \cdot  h_{2(t-i)}(x).$
+% \end{enumerate} 
+
+% \end{fact}
+
+% Fact~\ref{fact:hermite_properties} now implies 
+
+% \begin{align*}
+% \sigma x \cdot p'(\sigma x) &= \sum_{j=1}^d \sqrt{2j} \cdot  h_{2j}(0) \left(  h_{ 2j-1 } (\sigma x)  \cdot \sigma x \right) \\
+% &=  \sum_{j=1}^t 2j \cdot h_{2j}(0) \cdot  h_{2j} (\sigma x) + \sum_{j=1}^t \sqrt{ 2j (2j-1)} \cdot  h_{2j}(0)  \cdot h_{2j-2} (\sigma x)\\
+% &= \sum_{j=1}^{t-1} \left(2j \cdot h_{2j}(0)  - \sqrt{(2j+1)(2j+2)} \cdot h_{2j+2}(0)\right)\cdot h_{2j}(\sigma x) + 2d \cdot h_{2t}(0) \cdot h_{2t}(\sigma x) \\
+% &=  \sum_{j=1}^{t-1} \left(2j  - \sqrt{(2j+1)(2j+2)} \cdot \frac{h_{2j+2}(0)}{h_{2j}(0)}\right)\cdot h_{2j}(0) h_{2j}(\sigma x) + 2t \cdot h_{2t}(0) \cdot h_{2t}(\sigma x)\\
+% &= \sum_{j=1}^{t-1} -1 \cdot h_{2j}(0) h_{2j}(\sigma x) + 2t \cdot h_{2t}(0) \cdot h_{2t}(\sigma x)
+% \end{align*}
+% Where the final equality is via the values of $h_{2j}(0)$ from Fact~\ref{fact:hermite_properties}. Hence for all $\sigma \in [0, 1]$
+
+% \begin{align*}
+%     &\frac{d}{d\sigma} f(\sigma) \\
+%     &=2\sigma \cdot \E_{x \sim N(0,1)}\left[ p^2(\sigma x) \right] + 2\sigma^2 \cdot \E_{x \sim N(0,1)}\left[ p(\sigma x) p'(\sigma x) x \right]\\
+%     &= 2\sigma \cdot \left( \E_{x \sim N(0,1)}\left[ p^2(\sigma x) \right] + \cdot  \E_{x \sim N(0,1)}\left[ p(\sigma x) \left( p'(\sigma x) \sigma x\right) \right] \right)\\
+%     &= 2 \sigma \sum_{i=1}^{t-1} \sum_{j=1}^{t-1} \left( 1 + -1\right) \cdot h_{2i}(0) h_{2j}(0)\cdot \E_{x \sim N(0,1)} \left[ h_{2i}(\sigma x) h_{2j}(\sigma x)\right] \\
+%     &+ 2\sigma \sum_{j=1}^t (1 + 2t) h_{2i}(0) h_{2t}(0)\cdot \E_{x \sim N(0,1)} \left[ h_{2i}(\sigma x) h_{2j}(\sigma x) \right]\\
+%     &\geq 0 + 2\sigma \cdot \left(\sum_{j=1}^t (1 + 2t) h_{2i}(0) h_{2d}(0)\cdot \E_{x \sim N(0,1)} \left[ h_{2i}(\sigma x) h_{2j}(\sigma x) \right] \right)\\
+%     &\geq 0 
+% \end{align*}
+
+% Where the final inequality follows from Fact~\ref{fact:hermite_properties}, which implies \[\sign \left(h_{2i}(0) h_{2j}(0)\cdot \E_{x \sim N(0,1)} \left[ h_{2i}(\sigma x) h_{2j}(\sigma x) \right]\right) > 0.\] It remains to be shown that $f(1) \lesssim \frac{p^2(0)}{\sqrt{t}}$. This follows from the following calculation. 
+
+% \begin{align*}
+%     \E_{x \in N(0,1)} \left[ p^2(x)\right] &=  \E_{x \in N(0,1)} \left[ \sum_{i=1}^t \sum_{j=1}^t h_{2i}(0) h_{2j}(0) \cdot h_{2i}(x) h_{2j}(x) \right] \\
+%     &= \sum_{i=1}^t  h^2_{2i}(0)\\
+%     &= \sum_{i=1}^t \frac{(2i-1)!!^2}{(2i)!}\\
+%     &= \sum_{i=1}^t \left(\frac{(2i)!}{2^i i!}\right)^2 \cdot \frac{1}{(2i)!}\\
+%     &= \sum_{i=1}^t \frac{(2i)!}{2^{2i} i!^2}\\
+%     &= \sum_{i=1}^t \frac{1}{2^{2i}}\cdot \binom{2i}{i} \eqsim \sum_{i=1}^t \frac{1}{\sqrt{i}} \eqsim \sqrt{t}
+% \end{align*}
+
+% Also,
+
+% \[ p^2(0) = \left(\sum_i h^2_{2i}(0) \right)^2 \eqsim t,\]
+
+% which proves our result. 
+% % Before we prove the second property, note that a crude calculation from Fact~\ref{fact:hermite_properties} now implies 
+
+% % \begin{align*} 
+% %  \E_{x \sim N(0, 1)} \left[ h^2_{2t}(\sigma x) \right] &=  \sum_{i=0}^{t} \sigma^{4(t-i)} \left(\frac{\sigma^2 - 1}{2} \right)^{2i} \binom{2t}{2i} \cdot \binom{2i}{i} \\
+% %  &\eqsim \sum_{i=0}^{t} \sigma^{4(t-i)} \left(\frac{\sigma^2 - 1}{2}\right)^{2i} \binom{2t}{2i} \cdot\frac{2^{2i}}{\sqrt{i+1}}\\
+% %  &\leq \sum_{i=0}^{t} \sigma^{4(t-i)}(\sigma^2 - 1)^{2i} \binom{2t}{2i}\\
+% %  &< \left( \sigma^2 + (\sigma^2 - 1)\right)^{2t}\\
+% %  &<  (2\sigma)^{4t} 
+% %  \end{align*}
+
+% % Fact~\ref{fact:hermite_properties} and Cauchy Schwartz now imply 
+
+% % \begin{align*}
+% %     \E_{x \sim N(0,1)} \left[ p^2(\sigma x) \right] &= \E_{x \sim N(0, 1)} \left[  \left( \sum_{i=1}^d h_{2i}(0) \cdot h_{2i}(x) \right)^2 \right]\\
+% %     &\leq \E_{x \sim N(0, 1)} \left[  d \left( \sum_{i=1}^d h_{2i}^2(0) \cdot h^2_{2i}(\sigma x) \right) \right]\\
+% %     &\leq d \cdot  \sum_{i=1}^d h^2_{2i}(0) \cdot \E_{x \sim N(0, 1)} \left[ h^2_{2i} (\sigma x) \right]\\
+% %     &\lesssim d \cdot \sum_{i=1}^d h^2_{2i}(0) \cdot (2\sigma)^{4i} \\
+% %     &\leq d \cdot  (2\sigma)^{4d} \cdot \E_{x \sim N(0,1)}\left[ p^2(x) \right]
+% % \end{align*}
+% % The final inequality follows by parseval, i.e. $\cdot \E_{x \sim N(0,1)}\left[ p^2(x) \right] = \sum_{i=1}^d h^2_{2i}(0)$
+
+
+% \end{proof} 
+

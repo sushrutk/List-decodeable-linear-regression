@@ -1,0 +1,81 @@
+
+%!TEX root = ../main.tex
+\section{Information-Theoretic Lower Bounds for List-Decodable Regression} \label{sec:lower-bound}
+In this section, we show that list-decodable regression on $\Lin_D(\alpha,\ell^*)$ information-theoretically requires that $D$ satisfy $\alpha$-anti-concentration: $\Pr_{x \sim D}[ \iprod{x,v} = 0] < \alpha$ for any non-zero $v$. 
+
+\begin{theorem}[Main Lower Bound] \label{thm:main-lower-bound}
+For every $q$, there is a distribution $D$ on $\R^d$ satisfying $\Pr_{x \sim D}[ \iprod{x,v} = 0] \leq \frac{1}{q}$ such that there's no $\frac{1}{2q}$-approximate list-decodable regression algorithm for $\Lin_D(\frac{1}{q},\ell^*)$ that can output a list of size $< d$.  
+\end{theorem}
+\begin{remark}[Impossibility of Mixed Linear Regression on the Hypercube]
+Our construction for the case of $q = 2$ actually shows the impossibility of the well-studied and potentially easier problem of noiseless \emph{mixed linear regression} on the uniform distribution on $\zo^n$. This is because $\cR_i$ is, by construction, obtained by using one of  $e_i$ or $\1-e_i$ to label each example point with equal probability. 
+\end{remark}
+
+Theorem~\ref{thm:main-lower-bound} is tight in a precise way. In Proposition~\ref{prop:identifiability}, we proved that whenever $D$ satisfies $\Pr_{x \sim D} [\iprod{x,v} =0] < \frac{1}{q}$, there is an (inefficient) algorithm for \emph{exact} list-decodable regression algorithm for $\Lin_D(\frac{1}{q},\ell^*)$. Note that our lower bound holds even in the setting where there is no additive noise in the inliers. 
+
+Somewhat surprisingly, our lower bound holds for extremely natural and well-studied distributions - uniform distribution on $\zo^n$ and more generally, uniform distribution on $\{0,1,\ldots,q-1\}^d = [q]^d$ for any $q$. We can easily determine a tight bound on the anti-concentration of both these distributions. 
+
+
+
+\begin{lemma}
+For any non-zero $v \in \R^d$, $\Pr_{x \sim \zo^n} \iprod{x,v} = 0 \leq \frac{1}{2}$ and $\Pr_{x \sim [q]^d} [\iprod{x,v} = 0] \leq \frac{1}{q}$.
+\end{lemma}
+Note that this is tight for any $v = e_i$, the vector with $1$ in the $i$th coordinates and $0$s in all others.
+\begin{proof}
+Fix any $v$. 
+Without loss of generality, assume that all coordinates of $v$ are non-zero. 
+If not, we can simply work with the uniform distribution on the sub-hypercube corresponding to the non-zero coordinates of $v$. 
+
+
+
+Let $S \subseteq \zo^n$ ($[q]^d$, respectively) be the set of all $x \in \zo^n$ ($[q]^d$, respectively) such that $\iprod{x,v} = 0$. 
+Then, observe that for any $x \in S$, and any $i$, $x^{(i)}$ obtained by flipping the $i$th bit (changing the $i$th coordinate to any other value) of $x$ cannot be in $S$. 
+Thus, $S$ is an independent set in the graph on $\zo^n$ (in $[q]^d$, respectively) with edges between pairs of points with hamming distance $1$. 
+
+It is a standard fact~\cite{wiki-singleton} that the maximum independent set in the $d$-hypercube is of size exactly $2^{d-1}$ and in the $q$-ary Hamming graph $[q]^d$ is of size $q^{d-1}$. 
+Thus, $\Pr_{x \sim \zo^d} [\iprod{x,v} = 0] \leq \frac{1}{2}$ and $\Pr_{x \sim [q]^d} [\iprod{x,v} = 0] \leq \frac{1}{q}$.
+
+
+
+\end{proof}
+
+To prove our lower bound, we give a family of $d$ distributions on labeled linear equations, $\cR_i$  for  $1 \leq i \leq d$ that satisfy the following: 
+\begin{enumerate}
+\item The examples in each are chosen from uniform distribution on $[q]^d$, 
+\item $\frac{1}{q}$ fraction of the samples are labeled by $e_i$ in $\cR_i$, and, 
+\item for any $i, j$, $\cR_i$ and $\cR_j$ are statistically indistinguishable. 
+\end{enumerate}
+Thus, given samples from $\cR_i$, any $\frac{1}{2q}$-approximate list-decoding algorithm must produce a list of size at least $d$.
+
+Our construction and analysis of $\cR_i$ is simple and exactly the same in both the cases. 
+However it is somewhat easier to understand for the  case of the hypercube ($q = 2$).
+The following simple observation is the key to our construction.
+
+\begin{lemma}
+For $1 \leq i \leq d$, let $\cR_i$ be the distribution on linear equations induced by the following sampling method: Sample $x \sim \zo^d$, choose $a \sim \zo$ uniformly at random and output: $(x, \iprod{x, (1-a)e_i})$. Then, $\cR_i = \cR_j$ for any $i,j \leq  d$. 
+\end{lemma}
+
+
+
+\begin{proof}
+The proof follows by observing that $\cR_i$ when viewed as a distribution on  $\R^{d+1}$ is same as the uniform distribution on  $\zo^{d+1}$ and thus independent of $i$. 
+\end{proof}
+
+The argument immediately generalizes to $[q]^d$ and yields:
+
+\begin{lemma}
+For $1 \leq i \leq d$, let $\cR_i$ be the distribution on linear equations induced by the following sampling method: Sample $x \sim [q]^d$, choose $a \sim \zo$ uniformly at random and output: $(x, \Paren{\iprod{x, e_i}+a} \text{ mod } q)$. Then, $\cR_i = \cR_j$ for any $i,j \leq  d$. 
+\end{lemma}
+
+In this case, we interpret the $1/q$ fraction of the samples where $a = 0$ as the inliers. 
+Observe that these are labeled by a single linear  function $e_i$ in any $\cR_i$. 
+Thus, they form a valid model in $\Lin_D(\alpha,\ell^*)$ for $\alpha =  1/q$. 
+
+
+Since the linear functions defined by $e_i$ on $[q]^d$, when normalized to have unit norm, have a pairwise Euclidean distance of at least $1/q$, we immediately obtain a proof of  Theorem~\ref{thm:main-lower-bound}.
+
+
+% \begin{theorem}\label{thm:anticoncentration-is-necessary}
+% For every $q \in \N$, there does not exist a $\frac{1}{2q}$-approximate list-decoding algorithm that outputs a list of size $< d$ for $\Lin_D(\frac{1}{q},\ell^*)$ for $D$, the uniform distribution on $[q]^d$ . 
+% \end{theorem}
+
+

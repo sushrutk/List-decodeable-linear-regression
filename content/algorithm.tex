@@ -1,0 +1,747 @@
+
+%!TEX root = ../main.tex
+
+
+\section{Algorithm for List-Decodable Robust Regression}
+In this section, we describe and analyze our algorithm for list-decodable regression and prove our first main result restated here.
+\main*
+% In this section, we establish the information-theoretic feasibility of list-decodable robust regression by showing an \emph{inefficient} algorithm for the problem.  We will show that whenever the distribution $D$ satisfies an anti-concentration inequality, with high probability over the draw of a large enough polynomial size sample from $\Lin_D(\alpha,n,\ell^*)$, we can identify a list $L$ of $O(\frac{1}{\alpha})$ linear functions such that there exists an $\ell' \in L$ satisfying $\|\ell'-\ell^*\|_2 <\eta$. 
+
+% Let $\{(x_i,y_i)\}_{i = 1}^n$ be the input sample. 
+% A natural approach is to look at $\Sol$, the set of \emph{all} pairs $(S,\ell)$ such that $S \subseteq [n]$ of size $|S| = \alpha n$ and $\iprod{x_i,\ell} = y_i$ for every $i \in S$.  
+% We can simply hope to return the list $L$ of $\ell$s that appear in $\Sol$. 
+% Since $(\cI,\ell^*)$ is contained in $\Sol$, $\ell^* \in L$. 
+% However, it's not hard to show (see Lemma~\ref{}) this list $L$ can be $\exp(\Omega(n))$ in size - far from the absolute constant size we are shooting for.
+
+% % Indeed, any solution to list-decodable regression must (at least implicitly) establish $\Sol$ can be pruned down to an absolute constant size without affecting $(\cI,\ell^*)$.
+% The key idea that is both necessary (see Lemma~\ref{}) and sufficient to establish the \emph{existence} of a small list-decoding of the sample is the anti-concentration property of $\cI$.
+% % In Lemma~\ref{}, we show that anti-concentration of $\cI$ is also information-theoretically \emph{necessary} for list-decodable regression). 
+
+% \begin{definition}[Anti-Concentration]
+% A $\R^d$-valued, zero-mean random variable $Y$ is $C$-anti-concentrated if for all $v$ and $\delta$, $\Pr[ |\iprod{Y,v}| \leq \delta \sqrt{\E [\iprod{Y,v}^2}] \leq C\delta$.
+% \end{definition}
+
+% Let us characterize how anti-concentration of $\cI$ helps us prune the list $\Sol$:
+% \begin{proposition}
+% Suppose $\cI$ is $O(1)$-anti-concentrated and $\delta > 0$. Then, whenever $(S,\ell) \in \Sol$ such that $|S \cap \cI| > \delta |\cI|$, $\ell = \ell'$. 
+% \end{proposition}
+
+% \begin{proof}
+% Let $v = \ell - \ell'$. Then, for any $i \in S \cap \cI$, $\iprod{x_i,v} = 0$. Thus, $\Pr_{i \sim \cI} \iprod{x_i,v} = 0 \geq \delta$. If $v \neq 0$, this contradicts the anti-concentration of $\cI$. 
+% \end{proof}
+
+
+
+
+% \begin{theorem}[Robust Identifiability of List-Decoding Regression]
+% Let $\{(x_i,y_i)\}_{i = 1}^n$ be a sample from $\Lin_D(\alpha,n,\ell^*)$. Let 
+% \end{theorem}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+% In the next section, we will obtain an efficient algorithm with the same guarantees by ``SoSizing'' the proof here.
+
+We will analyze Algorithm~\ref{alg:noisy-regression-gaussian} to prove Theorem~\ref{thm:main}.
+% For $\cA_{w,\ell}$ be defined by  the following set of quadratic constraints. 
+
+\begin{equation}
+  \cA_{w,\ell}\colon
+  \left \{
+    \begin{aligned}
+      &&
+      \textstyle\sum_{i=1}^n w_i
+      &= \alpha n\\
+      &\forall i\in [n].
+      & w_i^2
+      & =w_i \\
+      &\forall i\in [n].
+      & w_i \cdot (y_i - \iprod{x_i,\ell})
+      & = 0\\
+      &
+      &\sum_{i \leq d} \ell_i^2 \leq 1\\
+    \end{aligned}
+  \right \}
+\end{equation} 
+
+
+
+\begin{mdframed}
+  \begin{algorithms}[List-Decodable Regression]
+    \label[algorithm]{alg:noisy-regression-gaussian}\mbox{}
+    \begin{description}
+    \item[Given:]
+    Sample $\cS$ of size $n$ drawn according to $\Lin(\alpha,n,\ell^*)$ with inliers $\cI$, $\eta > 0$. 
+    \item[Output:]
+    	A list $L \subseteq \R^d$ of size $O(1/\alpha)$ such that there exists a $\ell \in L$ satisfying $\|\ell -\ell^*\|_2 < \eta$.
+    \item[Operation:]\mbox{}
+    \begin{enumerate}
+		\item Find a degree $O(1/\alpha^4\eta^4)$ pseudo-distribution $\tilde{\mu}$ satisfying $\cA_{w,\ell}$ that minimizes $\|\pE[w]\|_2$.
+		\item For each $i \in [n]$ such that $\pE_{\tmu}[w_i] > 0$, let $v_i = \frac{\pE_{\tmu}[w_i \ell]}{\pE_{\tmu}[w_i]}$. Otherwise, set $v_i =0$.
+		\item 
+		Take $J$ be a random multiset formed by union of $O(1/\alpha)$ independent draws of $i \in [n]$ with probability $\frac{\pE[w_i]}{\alpha n}$.
+		\item Output $L = \{v_i \mid i \in J\}$ where $J \subseteq [n]$.
+	\end{enumerate}
+    \end{description}    
+  \end{algorithms}
+\end{mdframed}
+
+
+
+
+
+% As we show in the next section, this property holds for a large enough sample from $\Lin(\alpha,n,\ell^*)$. %To describe this property we need a polynomial approximating $\1(|x| <\delta)$. 
+
+% \begin{definition}[Core Indicator Polynomial]
+% A univariate polynomial $p$ on $\R$ is said to be a $(\delta,\epsilon)$-core indicator for a distribution $D$ on $\R$ if for every $x \in [-\delta,\delta]$, $p(x) \geq 1$ and $\E_D p^2 < \epsilon$. 
+% \end{definition}
+
+% We show in the appendix that such a polynomial exists for $N(0,1)$. This implies that for $x \sim N(0, \Sigma)$ with $\cond(\Sigma) < O(1)$ such a polynomial exists for $\langle x, v\rangle$ for any unit vector $v$.We state this lemma below and prove it in a subsequent section. 
+
+% \fixme{Currently, the polynomial seems to come from nowhere - so it's a bit dissatisfying. It might be good to either shift to the other anti-concentration statement or motivate the polynomial as an approximation to the indicator $\1(|x| <\delta)$ as in the overview.}
+
+% \begin{lemma} \label{lem:polynomial-fact}
+% Fix any $t \in \N$ and let $n \geq d^{t/2} \poly \log{(d)}$. 
+% Then, for some absolute constant $C' > 0$, there's a square, core indicator polynomial $p^2$ of degree $t$ satisfying $p^2(0) = 1$ such that with probability at least $1-1/d^2$ over the draw of the inliers in $\Lin_D(\alpha,n,\ell^*)$ whenever $D = \cN(0,\Sigma)$ for $\cond(\Sigma) \leq O(1)$:
+% \[
+% \Set{\|v\|_2^2 \leq 2} \sststile{t}{v} \Set{\frac{1}{|\cI|} \sum_{i \in \cI} \|v\|_2^2 p^2(\langle x_i, v \rangle) \leq \frac{C'}{\sqrt{t}} }\mper
+% \]
+
+% \end{lemma}
+
+% This is a condition that strongly relies on anti-concentration property for univariate gaussian random variable. 
+% This motivates the definition of a \emph{certifiably} anti-concentrated sample. 
+% \begin{definition}[Certifiable Anti-Concentration]
+% Let $p$ be the polynomial from Lemma~\ref{lem:polynomial-fact}. 
+% A sample $\cS$ from $\Lin_D(\alpha,n,\ell^*)$ is said to be \emph{certifiably} anti-concentrated if it satisfies
+% \[
+% \Set{\|v\|_2^2 \leq 2} \sststile{t}{v} \frac{1}{|\cI|} \sum_{i \in \cI} \|v\|_2^2 p^2(\langle x_i, v \rangle) \leq \frac{C'}{\sqrt{t}} \mper
+% \]
+% \end{definition}
+
+
+
+Our analysis follows the discussion in the overview. 
+We start by formally proving \eqref{eq:inliers-guess-well}. 
+
+\begin{lemma}
+For any $t \geq k$ and  any $\cS$ so that $\cI \subseteq \cS$ is $k$-certifiably $(C,\alpha^2\eta^2/4C)$-anti-concentrated,
+\[
+\cA_{w,\ell} \sststile{t}{w,\ell} \Set{\frac{1}{|\cI|}\sum_{i \in \cI}^n w_i \|\ell - \ell^*\|^2_2\leq \frac{\alpha^2\eta^2}{4}}
+\]
+\label{lem:close-on-inliers}
+\end{lemma}
+
+\begin{proof}
+We start by observing:
+\[
+\cA_{w,\ell} \sststile{2}{\ell} \|\ell - \ell^*\|_2^2 \leq 2 \mper
+\]
+
+Since $\cI$ is $(C,\alpha \eta/2C)$-anti-concentrated, there exists a univariate polynomial $p$ such that $\forall i$:
+
+\begin{equation}
+\Set{w_i\iprod{x,\ell-\ell^*} = 0} \sststile{\ell}{k} \Set{p(w_i\iprod{x_i,\ell-\ell^*}) = 1} \label{eq:value-at-0}
+\end{equation}
+and 
+
+\begin{equation} \label{eq:sos-expectation-p}
+\Set{\|\ell\|^2 \leq 1} \sststile{\ell}{k} \Set{\frac{1}{|\cI|} \sum_{i \in \cI} p( \iprod{x_i,\ell-\ell^*})^2 \leq \frac{\alpha^2  \eta^2}{4}}
+\end{equation}
+Using \eqref{eq:value-at-0}, we have:
+
+\begin{align*}
+\cA_{w,\ell} \sststile{t+2}{w,\ell} \Set{ 1-p^2 (w_i \langle x_i, \ell - \ell^* \rangle) = 0} \sststile{t+2}{w,\ell} \Set{1- w_i p^2 (\langle x_i, \ell - \ell^* \rangle) = 0}\\
+\end{align*}
+
+Using \eqref{eq:sos-expectation-p} and $\cA_{w,\ell} \sststile{w}{2} \Set{w_i^2 = w_i}$, we thus have:
+\begin{align*}
+\cA_{w,\ell}  \sststile{t+2}{w,\ell} \Bigl\{ \frac{1}{|\cI|} \sum_{i \in \cI} w_i \|\ell-\ell^*\|_2^2 &= \frac{1}{|\cI|} \sum_{i \in \cI} w_i \|\ell-\ell^*\|_2^2 w_i p^2 (\langle x_i, \ell-\ell^* \rangle) 
+= \frac{1}{|\cI|} \sum_{i \in \cI} w_i \|\ell-\ell^*\|_2^2 p^2 (\langle x_i, \ell-\ell^*\rangle) \\
+&\leq \frac{1}{|\cI|} \sum_{i \in \cI} \|\ell-\ell^*\|_2^2 p^2 (\langle x_i, \ell-\ell^* \rangle)  \leq \frac{\alpha^2 \eta^2}{4} \mper
+\Bigr\}
+\end{align*}
+
+\end{proof}
+
+
+
+As a consequence of this lemma, we can show that a constant fraction of the $v_i$ for $i \in \cI$ constructed in the algorithm are close to $\ell^*$. 
+
+\begin{lemma}
+For any $\tmu$ of degree $k$ satisfying $\cA_{w,\ell}$, 
+$\frac{1}{|\cI|} \sum_{i \in \cI} \pE[w_i] \cdot \|v_i -\ell^*\|_2 \leq \frac{\alpha}{2}\eta$.
+\label{lem:votes-are-close}
+\end{lemma}
+\begin{proof}
+By Lemma~\ref{lem:close-on-inliers}, we have:
+$
+\cA_{w,\ell} \sststile{k}{w,\ell} \Set{\frac{1}{|\cI|}\sum_{i \in \cI}^n w_i \|\ell - \ell^*\|^2_2\leq \frac{\alpha^2 \eta^2}{4} }
+$.
+
+
+We also have: $\cA_{w,\ell} \sststile{2}{w,\ell} \Set{w_i^2 - w_i =0}$ for any $i$. This yields:
+\[
+\cA_{w,\ell} \sststile{k}{w,\ell} \Set{\frac{1}{|\cI|}\sum_{i \in \cI}^n \|w_i\ell - w_i\ell^*\|^2_2\leq\frac{\alpha^2 \eta^2}{4} }
+\]
+
+
+
+Since $\tmu$ satisfies $\cA_{w,\ell}$, taking pseudo-expectations yields:$
+ \frac{1}{\cI} \sum_{i \in \cI}\pE \| w_i\ell  - w_i \ell^*\|_2^2 \leq \frac{\alpha^2 \eta^2}{4}$.
+
+By Cauchy-Schwarz for pseudo-distributions (Fact~\ref{fact:pseudo-expectation-cauchy-schwarz}), we have:
+\[
+ \Paren{\frac{1}{\cI} \sum_{i \in \cI} \| \pE[w_i\ell]  - \pE[w_i] \ell^*\|_2}^2 \leq \frac{1}{\cI} \sum_{i \in \cI} \| \pE[w_i\ell]  - \pE[w_i] \ell^*\|_2^2 \leq \frac{\alpha^2 \eta^2}{4} \mper
+\]
+
+
+
+Using $v_i = \frac{\pE[w_i \ell]}{\pE[w_i]}$ if $\pE[w_i] >0$ and $0$ otherwise, we have:
+$ \frac{1}{\cI} \sum_{i \in \cI, \pE[w_i] > 0} \pE[w_i]\cdot \|v_i -  \ell^*\|_2 \leq \frac{\alpha}{2}\eta $.
+
+
+
+\end{proof}
+
+
+
+
+
+
+
+Next, we formally prove that maximally uniform pseudo-distributions satisfy Proposition~\ref{prop:good-weight-on-inliers}.
+\begin{lemma}
+For any $\tilde{\mu}$ of degree $\geq 4$ satisfying $\cA_{w,\ell}$ that minimizes $\|\pE[w]\|_2$, $\sum_{i \in \cI} \pE_{\tilde{\mu}}[w_i] \geq \alpha^2 n$.
+ \label{lem:large-weight-on-inliers}
+\end{lemma}
+
+\begin{proof}
+Let $u = \frac{1}{\alpha n}\pE[w]$. Then, $u$ is a non-negative vector satisfying $\sum_{i \sim [n]} u_i = 1$.
+
+% Let $u_i = \frac{1}{\alpha m} \cdot \pE[w_i]$ so that $\sum_{i=1}^m \pE[u_i] = 1 $. 
+
+Let $\wt(\cI) = \sum_{i \in \cI} u_i$ and $\wt(\cO) = \sum_{i \not \in \cI} u_i$. Then, $\wt(\cI) + \wt(\cO) = 1$.
+
+We will show that if $\wt(\cI) < \alpha$, then there's a pseudo-distribution $\tmu'$ that satisfies $\cA_{w,\ell}$ and has a lower value of $\|\pE[w]\|_2$. This is enough to complete the proof. 
+
+To show this, we will ``mix'' $\tmu$ with another pseudo-distribution satisfying $\cA_{w,\ell}$. Let $\tmu^*$ be the \emph{actual} distribution supported on single $(w,\ell)$ - the indicator $\1_{\cI}$ and $\ell^*$. Thus, $\pE_{\tmu^*} w_i = 1$ iff $i \in \cI$ and $0$ otherwise. $\tmu^*$ clearly satisfies $\cA_{w,\ell}$. Thus, any convex combination (mixture) of $\tmu$ and $\tmu^*$ also satisfies $\cA_{w,\ell}$. 
+
+Let $\tmu_{\lambda} = (1-\lambda) \tmu + \lambda \tmu^*$. We will show that there is a $\lambda >0$ such that $\|\pE_{\tmu_{\lambda}}[w]\|_2 < \|\pE[w]\|_2$.  
+
+
+
+
+% Let \[ \mu_C = \sum_{i \in C} u_i \text{ and  } 1-\mu_C = \sum_{i \in [m]\setminus C} u_i. \] 
+We first lower bound $\|u\|_2^2$ in terms of $\wt(\cI)$ and $\wt(\cO)$. Observe that for any fixed values of $\wt(\cI)$ and $\wt(\cO)$, the minimum is attained by the vector $u$ that ensures $u_i = \frac{1}{\alpha n} \wt(\cI)$ for each $i \in \cI$ and $u_i = \frac{1}{(1-\alpha)n} \wt(\cO)$. \begin{align*}
+  \text{This gives }  \|u\|^2 &\geq \left( \frac{\wt(\cI)}{\alpha n} \right)^2 \alpha n + \left(\frac{1-\wt(\cI)}{(1-\alpha) n}\right)^2 (1-\alpha) n 
+    = \frac{1}{\alpha n}\cdot \left( \wt(\cI) + (1-\wt(\cI))^2 \left(\frac{\alpha}{1-\alpha}\right) \right)\mper 
+\end{align*}
+Next, we compute the the $\ell_2$ norm of $u' = \frac{1}{\alpha n} \pE_{\tmu_{\lambda}} w$ as:
+\[ \|u'\|_2^2 = (1-\lambda)^2 \|u\|^2 +  \frac{\lambda^2}{\alpha n} + 2 \lambda(1-\lambda)\frac{\wt(\cI)}{\alpha n} \mper\] 
+\begin{align*}
+    \text{Thus, } \|u'\|^2 - \|u\|^2  &= (-2\lambda+\lambda^2) \|u\|^2 +  \frac{\lambda^2}{\alpha n} + 2 \lambda(1-\lambda)\frac{\wt(\cI)}{\alpha n}\\
+    &\leq \frac{-2\lambda+\lambda^2}{\alpha n}\cdot \left( \wt(\cI)^2 + (1-\wt(\cI))^2 \frac{\alpha}{1-\alpha} \right) +  \frac{\lambda^2}{\alpha n} + 2 \lambda(1-\lambda)\frac{\wt(\cI)}{\alpha n}
+\end{align*}
+\begin{align*} \text{Rearranging, }\|u\|^2 - \|u'\|^2 &\geq \frac{\lambda}{\alpha n} \left( (2-\lambda) \cdot \left( \wt(\cI)^2 + (1-\wt(\cI))^2 \left(\frac{\alpha}{1-\alpha}\right) \right) -  \lambda - 2 (1-\lambda)\wt(\cI)\right)\\
+&\geq \frac{\lambda ( 2-\lambda)}{\alpha n} \left( \wt(\cI)^2 + (1-\wt(\cI))^2 \frac{\alpha}{1-\alpha} - \wt(\cI)\right)
+\end{align*}
+Now, whenever $\wt(\cI) < \alpha$, $\wt(\cI)^2 + (1-\wt(\cI))^2 \frac{\alpha}{1-\alpha} - \wt(\cI)> 0$. Thus, we can choose a small enough $\lambda > 0$ so that $\|u\|^2 - \|u'\|^2 > 0$. % contradicting that $u$ takes minimum norm under the conditions of the problem. Hence $\mu_C > \alpha$ and $Z \geq \alpha m$. 
+
+
+\end{proof}
+
+
+
+
+
+
+
+Lemma~\ref{lem:large-weight-on-inliers} and Lemma~\ref{lem:votes-are-close} immediately imply the correctness of our algorithm. 
+\begin{proof}[Proof of Main Theorem~\ref{thm:main}]
+First, since $D$ is $k$-certifiably $(C,\alpha \eta/4C)$-anti-concentrated, Lemma~\ref{lem:sampling-preserves-certified-anti-concentrated} implies taking $\geq n = (kd)^{O(k)}$ samples ensures that $\cI$ is $k$-certifiably $(C,\alpha \eta/2C)$-anti-concentrated with probability at least $1-1/d$. Let's condition on this event in the following. 
+
+Let $\tmu$ be a pseudo-distribution of degree $t$ satisfying $\cA_{w,\ell}$ and minimizing $\|\pE[w]\|_2$.
+Such a pseudo-distribution exists as can be seen by just taking the distribution with a single-point support $w$ where $w_i = 1$ iff $i \in \cI$. 
+
+From Lemma~\ref{lem:votes-are-close}, we have: 
+$
+\frac{1}{|\cI|} \sum_{i \in \cI} \pE[w_i] \cdot \|v_i -\ell^*\|_2 \leq \frac{\alpha}{2} \eta 
+$. Let $Z = \frac{1}{\alpha n} \sum_{i \in \cI} \pE[w_i]$. By a rescaling, we obtain:
+\begin{equation} 
+\frac{1}{|\cI|} \sum_{i \in \cI} \frac{\pE[w_i]}{Z} \cdot \|v_i -\ell^*\|_2 \leq \frac{1}{Z} \frac{\alpha}{2} \eta\mper
+\end{equation}
+Using Lemma~\ref{lem:large-weight-on-inliers}, $Z \geq \alpha$. Thus, 
+\begin{equation} 
+\label{eq:good-on-average}
+\frac{1}{|\cI|} \sum_{i \in \cI} \frac{\pE[w_i]}{Z} \cdot \|v_i -\ell^*\|_2 \leq \eta/2 \mper
+\end{equation}
+
+Let $i \in [n]$ be chosen with probability $\frac{\pE[w_i]}{\alpha n}$. 
+Then, $i \in \cI$ with probability $Z \geq \alpha$. 
+By Markov's inequality applied to \eqref{eq:good-on-average}, with $\frac{1}{2}$ conditioned on $i \in \cI$, $\|v_i - \ell^*\|_2 < \eta$. Thus, in total, with probability at least $\alpha/2$, $\|v_i - \ell^*\|_2 \leq \eta$.
+Thus, the with probability at least $0.99$ over the draw of the random set $J$, the list constructed by the algorithm contains an $\ell$ such that $\|\ell - \ell^*\|_2 \leq \eta$.
+
+Let us now account for the running time and sample complexity of the algorithm.
+The sample size for the algorithm is dictated by Lemma~\ref{lem:sampling-preserves-certified-anti-concentrated} and is $(kd)^{O(k)}$, which for our choice of $p$ goes as $(kd)^{O(k)}$.
+A pseudo-distribution satisfying $\cA_{w,\ell}$ and minimizing $\|\pE[w]\|_2$ can be found in time $n^{O(k)} = (kd)^{O(k^2)}$. 
+The rounding procedure runs in time at most $O(nd)$. 
+
+
+
+
+\end{proof}
+
+
+
+
+
+% We now prove Lemma~\ref{lem:polynomial-fact}
+% \begin{proof}[Proof of Lemma~\ref{lem:polynomial-fact}]
+%  Since $\cond(\Sigma) < O(1)$ there exists a uniform scaling of the data such such that $\|\Sigma\|_2 \leq 1$ and $\cond(\Sigma) < O(1)$. Once we have this scaling, observe that for any $v$, $\langle x_i, v\rangle$ is distributed as  $ c \cdot\|v\|_2 \cdot N(0, 1)$ for some $c \in [1/\cond(\Sigma), 1]$. Let $z_i \sim N(0,1)$ and $\sigma^2 = \|v\|^2$.  It is now  sufficient to show that for any $0 < \sigma^2 < 2$ there is an SoS proof of the existence of an even degree $t$ polynomial $p$ satisfying
+ 
+%  \[ \frac{\sigma^2}{n} \sum_{i=1}^n p^2(\sigma z_i) \leq \frac{2C'}{\sqrt{t}} \] 
+% for some constant $C'$. Note that this is also a polynomial relationship in $\sigma$ (in fact, $\sigma^2$ as will be shown later).  
+% This follows from an application of Lemma~\ref{lem:univppty_box} or \ref{lem:univppty_gauss}, which give us an even polynomial $p'$ such that for any $\sigma' < 1$
+
+% \[ \sigma'^2 \E_{z \sim N(0,1)} \left[ p'^2(\sigma' z) \right] \leq \frac{C'}{\sqrt{t}} \] 
+
+% Since such a polynomial exists. We also have that for any $c \in [1/\cond(\Sigma), 1]$ and as long as $\sigma^2 < 2$ there exists another polynomial $p$ satisfying 
+% \[ \sigma^2 \E_{z \sim N(0,c)} \left[ p^2(\sigma z) \right] \leq \frac{C''}{\sqrt{t}}. \] 
+% This follows by a constant scaling of the variable of $p'(\cdot)$. A standard concentration argument (for instance using techniques similar to~\cite{2017KS}) now implies that if $n \geq d^{t/2} \poly \log (d)$ with probability at least $1-1/d^2$, we have 
+
+%  \[ \frac{\sigma^2}{n} \sum_{i=1}^n p^2(\sigma z_i) \leq \frac{2C'}{\sqrt{t}} \] 
+
+% Observe that since $p$ is even, it only contains even powers of $\sigma$ hence $r(\sigma^2) =  \frac{\sigma^2}{n} \sum_{i=1}^n p^2(\sigma z_i)$ is a polynomial in the variable $\sigma^2$. Fact~\ref{fact:univariate-interval} now implies that if we can derive $\sigma^2 > 0$ and $\sigma^2 < 2$ we are done. Recalling $\sigma = \|v\|_2$, the first is immediate since $\|v\|_2^2$ is a sum of squares, and the second follows from our constraint. The lemma follows by noting that $z_i$ is distributed the same as $\langle x_i, v\rangle$.
+% \end{proof} 
+
+\subsection{List-Decodable Regression for Boolean Vectors} \label{sec:hypercube}
+
+In this section, we show algorithms for list-decodable regression when the distribution on the inliers satisfies a weaker anti-concentration condition. This allows us to handle more general inlier distributions including the product distributions on $\on^d$, $[0,1]^d$ and more generally any product domain. We however require that the unknown linear function be ``Boolean'', that is, all its coordinates be of equal magnitude.
+
+We start by defining the weaker anti-concentration inequality. Observe that if $v \in \R^d$ satisfies $v_i^3 = \frac{1}{d} v_i$ for every $i$, then the coordinates of $v$ are in $\{0,\pm \frac{1}{\sqrt{d}}\}$.
+
+\begin{definition}[Certifiable Anti-Concentration for Boolean Vectors] \label{def:certified-anti-concentration-Boolean}
+A $\R^d$ valued random variable $Y$ is $k$-\emph{certifiably} $(C,\delta)$-anti-concentrated in \emph{Boolean directions} if there is a univariate polynomial $p$ satisfying $p(0) = 1$ such that there is a degree $k$ sum-of-squares proof of the following two inequalities: for all $x^2 \leq \delta^2$, $(p(x) - 1)^2 \leq \delta^2$ and for all $v$ such that $v_i^3 = \frac{4}{d} v_i$ for all $i$, $\|v\|^2 \E_{Y} p(\iprod{Y,v})^2 \leq C\delta$. 
+\end{definition} 
+
+We can now state the main result of this section.
+
+
+\begin{theorem}[List-Decodable Regression in Boolean Directions]
+For every $\alpha, \eta$, there's a algorithm that takes input a sample generated according to $\Lin_D(\alpha,n,\ell^*)$ in $\R^d$ for $D$ that is $k$-certifiably $(C,\alpha \eta/10C)$-anti-concentrated in Boolean directions and $\ell^* \in \Set{\pm{\frac{1}{\sqrt{d}}}}^d$ and outputs a list $L$ of size $O(1/\alpha)$ such that there's an $\ell \in L$ satisfying $\|\ell-\ell^*\| <\eta$ with probability at least $0.99$ over the draw of the sample. The algorithm requires a sample of size $n \geq (d/\alpha \eta)^{O(\frac{1}{\alpha^2 \eta^2})}$ and runs in time $n^{O(k)} = (d/\alpha\eta)^{O(k^2)}$. \label{thm:Booleanmain}
+\end{theorem}
+
+% \begin{theorem}[List-Decoding Random Linear Equations, Gaussian Case]
+% For every $\alpha, \eta$, there's a algorithm that takes input a sample generated according to $\Lin_D(\alpha,n,\ell^*)$ in $\R^d$ for $D = \cN(0,\Sigma)$ with $\cond(\Sigma) = O(1)$ and outputs a list $L$ of size $O(1/\alpha)$ such that there's an $\ell \in L$ satisfying $\|\ell-\ell^*\| <\eta$ with probability at least $0.99$ over the draw of the sample. The algorithm requires a sample of size $n \geq d^{O(\frac{1}{\alpha^2 \eta^2})}$ and runs in time $n^{O(\frac{1}{\alpha^2 \eta^2})} = d^{O(\frac{1}{\alpha^4 \eta^4})}$. \label{thm:main}
+% \end{theorem}  
+
+% \Pnote{editing here}We can extend this result to more general distributions with the additional restriction that $\ell^* \in \pm \Set{\frac{1}{\sqrt{d}}}^d$.
+
+
+% In Section~\ref{sec:certified-anti-concentration}, we show that the following class of random variables are certifiably anti-concentrated in Boolean directions. 
+% \begin{lemma}[Certifiable Anti-Concentration in Boolean Directions]
+% Fix $C> 0$. Let $Y$ be a $\R^d$ valued \emph{product} random variable satisfying: 
+% \begin{enumerate}
+% \item \textbf{Identical Coordinates}: $Y_i$ are identically distributed for every $1 \leq i \leq d$. 
+% \item \textbf{Anti-Concentration} For every $v \in \{0,\pm\frac{1}{\sqrt{d}}\}^d$, $\Pr[|\iprod{Y,v}| \leq \delta \sqrt{\E \iprod{Y,v}^2}] \leq C\delta$.
+% \item \textbf{Light tails} For every $v \in \S^{d-1}$, $\Pr[ |\iprod{x,v}|> t \sqrt{\E \iprod{x,v}^2}] \leq \exp(-t^{2/q}/C)$. 
+% \end{enumerate}
+% Then, $Y$ is $k$-certifiably $(C,\delta)$-anti-concentrated for $k = O(\frac{\log^{2q}(1/\delta)}{\delta^{2q}})$.\fixme{make subgaussian if we cannot handle heavier tails.}
+% \end{lemma}
+
+% As a corollary, we obtain that the uniform distribution on the Boolean hypercube $\{\pm 1\}^d$, the solid hypercube $[0,1]^d$ and more generally product distributions on any $[q]^d$ with all marginals bounded away from $0$ are certifiably anti-concentrated in Boolean directions. 
+
+% In this section, we prove \cref{thm:Booleanmain} here. \Booleanmain*
+
+
+
+The only  difference in our algorithm and rounding is that instead of the constraint set $\cA_{w,\ell}$, we will work with $\cB_{w,\ell}$  that has an additional constraint $\ell_i^2 = \frac{1}{d}$ for every $i$. Our algorithm is exactly the same as Algorithm~\ref{alg:noisy-regression-gaussian} replacing $\cA_{w,\ell}$ by $\cB_{w,\ell}$.
+
+\begin{equation}
+  \cB_{w,\ell}\colon
+  \left \{
+    \begin{aligned}
+      &&
+      \textstyle\sum_{i=1}^n w_i
+      &= \alpha n\\
+      &\forall i\in [n],
+      & w_i^2
+      & =w_i \\
+      &\forall i\in [n],
+      & w_i \cdot (y_i - \iprod{x_i,\ell})
+      & = 0\\
+      &\forall in \in [d],
+      &\ell_i^2 &= \frac{1}{d}\\
+    \end{aligned}
+  \right \}
+\end{equation} 
+
+We will use the following fact in our proof of Theorem~\ref{thm:Booleanmain}.
+
+\begin{lemma}
+If $a,b$ satisfy $a^2 = b^2 = \frac{2}{d}$, then, 
+$
+(a- b)^{3} = \frac{1}{d} (a - b)
+$ \label{lem:simple-cubic}
+\end{lemma}
+\begin{proof}
+$(a-b)^3 = a^3 - b^3 - 3a^2 b + 3ab^2 = \frac{1}{d}(a-b-3b+3a) = \frac{4}{d}(a-b)$.
+\end{proof}
+
+
+
+
+\begin{proof}[Proof of Theorem~\ref{thm:Booleanmain}]
+The proof remains the same as in the previous section with one additional step. 
+First, we can obtain the analog of Lemma~\ref{lem:close-on-inliers} with a few quick modifications to the proof. 
+Then, Lemma~\ref{lem:votes-are-close} follows from modified Lemma~\ref{lem:close-on-inliers} as in the previous section. 
+And the proof of Lemma~\ref{lem:large-weight-on-inliers} remains exactly the same. 
+We can then put the above lemmas together just as in the proof of Theorem~\ref{thm:main}. 
+
+We now describe the modifications to obtain the analog of Lemma~\ref{lem:close-on-inliers}. 
+The key additional step in the proof of the analog of Lemma~\ref{lem:close-on-inliers} which follows immediately from Lemma~\ref{lem:simple-cubic}.
+
+\[
+\Set{\forall i\text{ } \ell_i^2 = \frac{1}{d}} \sststile{4}{\ell} \Set{ (\ell_i - \ell_i^*)^{3} = \frac{4}{d} (\ell_i - \ell_i^*)}
+\]
+
+This allows us to replace the usage of certifiable anti-concentration by certifiable anti-concentration for Boolean vectors and derive:
+\[
+\Set{\forall i\text{ } \ell_i^2 = \frac{2}{d}} \sststile{4}{\ell} \Set{\frac{1}{|\cI|}\sum_{i \in \cI} p(\iprod{x_i,\ell-\ell^*})^2 \leq \frac{\alpha^2 \eta^2}{4} }
+\]
+
+The rest of the proof of Lemma~\ref{lem:close-on-inliers} remains the same. 
+
+
+
+
+\end{proof}
+
+
+% \begin{mdframed}
+%   \begin{algorithms}[List-Decoding Noisy Linear Equations]
+%     \label[algorithm]{alg:noisy-regression-hypercube}\mbox{}
+%     \begin{description}
+%     \item[Given:]
+%     Sample $\cS$ of size $n$ drawn according to $\Lin(\alpha,n,\ell^*)$ with inliers $\cI$, $\eta > 0$. 
+%     \item[Output:]
+%     	A list $L \subseteq \R^d$ of size $O(1/\alpha)$ such that there exists a $\ell \in L$ satisfying $\|\ell -\ell^*\|_2 < \eta$.
+%     \item[Operation:]\mbox{}
+%     \begin{enumerate}
+% 		\item Find a degree $O(1/\alpha^2\eta^2)$ pseudo-distribution $\tilde{\mu}$ satisfying $\cB_{w,\ell}$ that minimizes $\|\pE[w]\|_2$.
+% 		\item For each $i \in [n]$ such that $\pE_{\tmu}[w_i] > 0$, let $v_i = \frac{\pE_{\tmu}[w_i \ell]}{\pE_{\tmu}[w_i]}$. Otherwise, set $v_i =0$.
+% 		\item 
+% 		Take $J$ be a random multiset formed by union of $O(1/\alpha)$ independent draws of $i \in [n]$ with probability $\frac{\pE[w_i]}{\alpha n}$.
+% 		\item Output $L = \{v_i \mid i \in J\}$ where $J \subseteq [n]$.
+% 	\end{enumerate}
+%     \end{description}    
+%   \end{algorithms}
+% \end{mdframed}
+
+% \begin{lemma} \label{lem:polynomial-fact-hypercube}
+% Fix any $t \in \N$ and let $n \geq d^{t/2} \poly \log{(d)}$. 
+% Then, for some absolute constant $C' > 0$, there's a square, core indicator polynomial $p^2$ of degree $t$ satisfying $p^2(0) = 1$, $p^2(x) = p^2(-x)$ for all $x$ such that with probability at least $1-1/d^2$ over the draw of the inliers in $\Lin_D(\alpha,n,\ell^*)$ for a nice distribution $D$ and $\ell^* \in \Set{\pm \frac{1}{\sqrt{d}}}^d$:
+% \[
+% \Set{v_i^2 = \frac{1}{d} \forall i} \sststile{t}{v} \Set{\frac{1}{|\cI|} \sum_{i \in \cI} \|v-\ell^*\|_2^2 p^2(\langle x_i, v-\ell^* \rangle) \leq \frac{C'}{\sqrt{t}} }\mper
+% \]
+
+% \end{lemma}
+
+%\begin{proof}[Proof Sketch]
+% Lemma~\ref{lem:univppty_box} gives the existence of the required core indicator polynomial for any $v \in \S^{d-1}$. 
+% What remains to argue is a SoS proof of the requisite bound on the empirical expectation of $p^2$. 
+% As in the proof of Lemma~\ref{lem:polynomial-fact}, by appealing to concentration of the $2t$th moment tensor of $D$ in spectral norm, we reduce our task to establishing a SoS proof of the inequality $\|v-\ell^*\|^2\E_{x \sim D} p^2(\iprod{x,v-\ell^*}) \leq \frac{C}{\sqrt{t}}$.
+
+% The simple but key observation underlying the proof is that for any univariate polynomial $p$ of degree at most $2$, $\E_{x \sim D} p^2(\iprod{x,v-\ell^*})$ is a \emph{symmetric} polynomial in $v-\ell^*$ with non-zero coefficients only on even-degree monomials in $v-\ell^*$. This follows by noting that the coordinates of $D$ are independent and identically distributed and $p^2$ is an even function. All symmetric polynomials can be expressed as polynomials in the ``power-sum'' polynomials $\sum_{i = 1}^n \|v-\ell^*\|^{2i}$ for $i \leq 2t$. To finish the proof, we observe:
+
+% First observe that for any $i$:
+% \[
+% \Set{v_i^2 = \frac{1}{\sqrt{d}} } \sststile{4}{v} \Set{(v_i -\ell^*_i)^3 = (v_i - \ell^*_i)} \mper
+% \]
+
+% Using this fact repeatedly yields:
+% \[
+% \Set{v_i^2 = \frac{1}{\sqrt{d}} \forall i} \sststile{2i}{v} \Set{(v_i -\ell^*_i)^{2i} = (v_i - \ell^*_i)^2} \mper
+% \]
+
+% This implies that:
+% \[
+% \Set{v_i^2 = \frac{1}{\sqrt{d}} \forall i} \sststile{2i}{v} \Set{\sum_{i =1}^d(v_i -\ell^*_i)^{2i} = \sum_{i = 1}^d(v_i - \ell^*_i)^2} \mper
+% \]
+
+% Thus,  for some univariate polynomial $F$ of degree at most $2t$,
+% \begin{equation} \label{eq:reduce-to-univariate}
+% \Set{v_i^2 = \frac{1}{\sqrt{d}} \forall i} \sststile{2t}{v} \Set{\E_{x \sim D} p^2(\iprod{x,v-\ell^*}) = F(\|v-\ell^*\|_2^2)} \mper
+% \end{equation}
+
+% From Lemma~\ref{lem:univppty_box}, $\|v-\ell^*\|_2^2 F(\|v-\ell^*\|_2^2) \leq \frac{C'}{\sqrt{t}}$ whenever $\|v-\ell^*\|_2^2 \leq 2$. Since $F$ is a univariate polynomial and $\|v-\ell^*\|_2^2\leq 2$ is an ``interval constraints'' by applying Fact~\ref{fact:univariate-interval}, we immediately obtain:
+
+% \begin{equation} \label{eq:final-univariate-step}
+% \sststile{2t}{\|v-\ell^*\|_2^2} \Set{\|v-\ell^*\|_2^2 F(\|v-\ell^*\|_2^2) \leq \frac{C'}{\sqrt{t}}} 
+% \end{equation}
+% Combining \eqref{eq:reduce-to-univariate} and \eqref{eq:final-univariate-step} finishes the proof. 
+
+
+
+
+% \end{proof}
+
+\section{Certifiably Anti-Concentrated Distributions} \label{sec:certified-anti-concentration}
+In this section, we prove certifiable anti-concentration inequalities for some basic families of distributions. We first formally state the definition of certified-anti-concentration.
+
+\begin{definition}[Certifiable Anti-Concentration] \label{def:formal-certified-anti-concentration}
+A $\R^d$-valued zero-mean random variable $Y$ has a $(C,\delta)$-\emph{anti-concentrated} distribution if $\Pr[ |\iprod{Y,v}| \leq \delta \sqrt{ \E \iprod{Y,v}^2}]\leq C\delta$.
+
+
+$Y$ has a $k$-\emph{certifiably} $(C,\delta)$-anti-concentrated distribution if there is a univariate polynomial $p$ satisfying $p(0) = 1$ such that
+\begin{enumerate} 
+\item $\left \{ \langle Y,v\rangle^2 \leq \delta^2 \E \langle Y,v\rangle^2 \right \}  \sststile{k}{v} \left \{ (p(\langle Y,v\rangle) -1)^2\leq \delta^2 \right \}$.
+\item $\left \{ \|v\|_2^2 \leq 1 \right \} \sststile{k}{v} \left \{ \|v\|_2^2 \E p^2(\left \langle Y,v\rangle \right) \leq C\delta \right \}$.
+\end{enumerate}
+We will say that such a polynomial $p$ ``witnesses the certifiable anti-concentration of $Y$''. We will use the phrases ``$Y$ has a certifiably anti-concentrated distribution'' and ``$Y$ is a certifiably anti-concentrated random variable'' interchangeably. 
+\end{definition} 
+
+
+Before proceeding to prove certifiable anti-concentration of some important families of distributions, we observe the invariance of the definition under scaling and shifting. 
+
+\begin{lemma}[Scale invariance] \label{lem:shift-scale-invariance}
+Let $Y$ be a $k$-certifiably $(C,\delta)$-anti-concentrated random variable. Then, so is $cY$ for any $c\neq 0$. 
+\end{lemma}
+\begin{proof}
+Let $p$ be the polynomial that witnesses the certifiable anti-concentration of $Y$. 
+Then, observe that $q(z) = p(z/c)$ satisfies the requirements of the definition for $cY$. 
+\end{proof}
+% \fixme{Check all the parameters in the statements below.}
+
+\begin{lemma}[Certified anti-concentration of gaussians]\label{lem:spherically-symmetric-certifiable-gaussians}
+For every $0.1 > \delta >0$, there is a $k = O\left(\frac{\log^2(1/\delta)}{\delta^2}\right)$  such that $\cN(0,I)$ is $k$-certifiably $(2,2\delta)$-anti-concentrated.
+\end{lemma}
+\begin{proof}
+Lemma~\ref{lem:univppty_box} yields that there exists an univariate even polynomial $p$ of degree $k$ as above such that for all $v$, whenever $|\iprod{x,v}| \leq \delta$, $p(\iprod{x,v}) \leq 2\delta$, and whenever $\|v\|^2 \leq 1$, $\E_{x \sim \cN(0,I)} p(  \iprod{x,v})^2 \leq 2\delta$. Since $p$ is even, $p(z) = \frac{1}{2}(p(z) +  p(-z))$  and thus, any monomial in $p(z)$ with non-zero  coefficient must be of even degree. Thus, $p(z) =  q(z^2)$ for some polynomial $q$ of degree $k/2$. 
+
+The first property above for $p$ implies that whenever $z \in [0,\delta]$, $p(z) \leq 2 \delta$. 
+By Fact~\ref{fact:univariate-interval}, we obtain that:
+\[
+\Set{\iprod{x,v}^2 \leq \delta^2} \sststile{k}{v} \Set{p(\iprod{x,v})^2 \leq \delta }
+\]  
+
+Next, observe that for any $j$, $\E_{x \sim \cN(0,I)} \iprod{x,v}^{2j} = (2j)!! \cdot \|v\|_2^{2j}$.
+Thus, $\|v\|_2^2 \E_{x \sim \cN(0,I)} p^2(\iprod{x,v})$ is a univariate polynomial $F$ in $\|v\|_2^2$. 
+The second property above thus implies that $F(\|v\|_2^2) \leq C\delta$ whenever $\|v\|_2^2 \leq 1$.
+By another application of Fact~\ref{fact:univariate-interval}, we obtain:
+\[
+\Set{\|v\|_2^2 \leq 1} \sststile{k}{v} \Set{\E_{x\sim \cN(0,I)} p(\iprod{x,v})^2 \leq 2\delta}
+\]  
+
+
+
+% For the Gaussian distribution, both the inequalites required to show that there is a $p$ witnessing the certifiable anti-concentration of $Y$ are proved in Lemma~\ref{lem:univppty_box}. We now need to exhibit sum-of-squares proofs. Observe that Fact~\ref{fact:univariate-interval} now implies that there is a degree $2d$ sum-of-squares proof of inequality 1. 
+
+% Since the $p$ from Lemma~\ref{lem:univppty_box} is even, the polynomial $p(\langle Y, v \rangle)$ is actually a polynomial in $\langle Y, v \rangle^2$. Since, $\E_Y [\langle Y, v \rangle^2] = \|v\|_2^2$, and in general expectations of even powers of $\langle Y, v \rangle$ are functions of $\|v\|^2$, we see that inequality 2 is a univariate polynomial inequality in the variable $\|v\|_2^2$. Once again, Fact~\ref{fact:univariate-interval} implies there is a sum-of-squares proof of inequality 2. 
+\end{proof}
+
+We say that $Y$ is a \emph{spherically symmetric} random variable over $\R^d$ if for every orthogonal matrix $R$, $RY$ has the same distribution as $Y$. Examples include the standard gaussian random variable and uniform (Haar) distribution on $\S^{d-1}$. Our argument above for the case of standard gaussian extends to any distribution that is spherically symmetric and has sufficiently light tails. 
+
+\begin{lemma}[Certified anti-concentration of spherically symmetric, light-tail distributions] \label{lem:spherically-symmetric-certifiable-anti-concentration}
+Suppose $Y$ is a $\R^d$-valued, spherically symmetric random variable  such that for any $k \in (0, 2)$, for all $t$ and for all $v$, 
+$\Pr[\langle v,  Y\rangle \geq t \sqrt{\E \langle Y, v \rangle ^2}] \leq Ce^{-t^{2/k}/C}$ and for all $\eta > 0$, $\Pr_{x \sim D} [ |x| < \eta\sigma] \leq C\eta$, for some absolute constant $C >0$. Then, for $d = O\left(\frac{\log^{(4+k)/(2-k)}(1/\delta)}{\delta^{2/(2-k)}}\right)$, $Y$ is $d$-certifiably $(10C, \delta)$-anti-concentrated.
+\end{lemma}
+\Pnote{Good to see if $C''$ is just $CC'$ or something.}
+
+
+
+\begin{lemma}[Certified anti-concentration under sampling] \label{lem:sampling-preserves-certified-anti-concentrated}
+Let $D$ be $k$-certifiably $(C,\delta)$-anti-concentrated, subexponential and unit covariance distribution. Let $S$ be a collection of $n$ independent samples from $D$. Then, for $n \geq \Omega \left( (kd\log(d))^{O(k)} \right)$, with probability at least $1-1/d$, the uniform distribution on $S$ is $(2C,\delta)$-anti-concentrated. 
+\end{lemma}
+\begin{proof} 
+% THIS IS ONLY FOR V1 -- USING THE FROBENIUS BOUND. 
+Let $p$ be the degree $k$ polynomial that witnesses the certifiable anti-concentration of $D$. 
+Let $Y$ be the random variable with distribution $D'$, the uniform distribution on $n$ i.i.d. samples from $D$.
+% For $Y$ drawn from the distribution that is uniform over $n$ samples from $D$, we will use the same $p$. 
+We will show that $p$ also witnesses that $k$-certifiable $(4C,\delta/2)$-anti-concentration of $Y$. To this end it is sufficient to take enough samples such that the following holds. 
+\[ \Pr\left( \left| \E_{D} [p^2(\langle Y, v\rangle)] - \E_{D'} [p^2(\langle Y, v\rangle)] \right| > \E_{D} [p^2(\langle Y, v\rangle)]/2 \right) < 1/d \] 
+Observe that $p^2(\langle Y, v\rangle)$ may be written as $\langle c(Y)c(Y)^T, m(v)m(v)^T\rangle$ where $c(Y)$ are the coefficients of $p(\langle Y, v\rangle)$ and $m(v)$ is the vector containing monomials. The dot product above is the usual trace inner product between matrices. Now, it is sufficient to show that 
+\[ \Pr\left( \| \E_{D'} c(Y)c(Y)^T - \E_{D} c(Y)c(Y)^T \|_F^2 > \|\E_{D} c(Y)c(Y)^T\|_F^2/4 \right) < 1/d \] 
+Since $p$ was a univariate polynomial of degree $k$ in $d$ dimensional variables, there are at most $d^{2k}$ entries in total, and each entry is at most a degree $2k$ polynomial of subexponential random variables in $d$ variables. Using standard concentration results for polynomials of subexponential random variables (for instance Theorem 1.2 from \cite{PolyConc} and the references therein). We see that  each entry satisfies 
+\[ \Pr \left( \left| \E_D c(Y)_i c(Y)_j - \E_{D'} c(Y)_i c(Y)_j \right| > \eps \right) \leq \exp\left(- \Omega\left(\frac{n \eps}{\E(c(Y)_i c(Y)_j)^2}\right)^{1/2k}\right) \] 
+An application of a union bound, squaring the term inside and replacing $\eps^2$ by $\E(c(Y)_i c(Y)_j)^2/4$ gives us 
+\[ \Pr \left( \sum_{i,j = 1}^{d^{2k}} \left( \E_D c(Y)_i c(Y)_j - \E_{D'} c(Y)_i c(Y)_j \right)^2 > \| \E c(Y) c(Y)^T \|^2_F/4  \right) \leq d^{2k} \exp\left(- \Omega\left(\frac{n}{d^{O(k)}}\right)^{1/2k}\right) \] 
+Hence, setting $n = O((k d \log(d))^{O(k)})$ ensures that with probability at least $1-1/d$, the distribution $D'$ is $(2C, \delta)$-anti-concentrated.  
+
+
+\end{proof}
+
+
+
+
+% \begin{proof}
+% % Since $D$ is a $k$-certifiably $(C, \delta)$-anti-concentrated random variable over $\R^d$, there is a univariate polynomial $p$ satisfying $p(0) = 1$ such that
+% % \begin{enumerate} 
+% % \item $\left \{ \langle Y,v\rangle^2 \leq \delta^2 \E \langle Y,v\rangle^2 \right \}  \sststile{k}{v} \left \{ (p(\langle Y,v\rangle) -1)^2\leq \delta^2 \right \}$.
+% % \item $\left \{ \|v\|_2^2 \leq 1 \right \} \sststile{k}{v} \left \{ \|v\|_2^2 \E p^2(\left \langle Y,v\rangle \right) \leq C\delta \right \}$.
+% % \end{enumerate}
+% Let $p$ be the polynomial that witnesses the certifiable anti-concentration of $D$. 
+% Let $Y$ be the random variable with distribution $D'$, the uniform distribution on $n$ i.i.d. samples from $D$.
+% % For $Y$ drawn from the distribution that is uniform over $n$ samples from $D$, we will use the same $p$. 
+% We will show that $p$ also witnesses that $k$-certifiable $(4C,\delta/2)$-anti-concentration of $Y$. To this end it is sufficient to prove that in $m = (d \log(d/\tau))^{k/2}/\eps^2$ samples we get 
+% \[ \Pr\left( \left| \E_{D} [p^2(\langle Y, v\rangle)] - \E_{D'} [p^2(\langle Y, v\rangle)] \right| > \eps \right) < \delta \] 
+
+% Note that $\E_{D}[p^2(\langle Y, v\rangle)] = \langle \E_{D}[P], M(v) \rangle$ where $P$ is the $d \times d$ outer product of the vector of the coefficients of the monomials of $v$ in $p(\langle Y, v\rangle)$ and $M(v)$ is the outer product of the corresponding monomial vectors. The inner product we use here is the usual trace-inner product for matrices. Hence, it is sufficient to show that in $m$ samples $\Pr\left( \| \E_{D} [P] - \E_{D'} [P]\|_2  > \eps \right) < \delta$.
+
+% Observe that $\E P = \E c(Y) c(Y)^{\top}$ for some vectors $c(Y)$. Suppose that the samples drawn induce $c(Y_i)s$ that are full dimensional (if not, just work in the range-space of these samples). We will need the following facts  
+% \begin{fact}[Theorem 1.5, Page 7 of~\cite{srivastava2013}]\label{fact:covariance-bound}
+% Let $X$ be a random variable in $\R^d$ with covariance $I$. For any $C, \eta > 0$ assume that $\max_{\|\ell\|_2 = 1} \E | \langle \ell, X \rangle |^{2+\eta} < C$. Then, $\forall \eps > 0$ and for any $n \geq \Theta(1) \eps^{-2-2/\eta} d$, the minimum eigenvalue of the sample covariance $\frac{1}{n} \sum_i x_i x_i^{\top}$ where $x_i$ are independent draws from $X$ is $\geq 1-\eps$. 
+% \end{fact} 
+
+
+% \begin{fact}\label{fact:matrix-rosenthal}
+% Fix $p \geq 1. 5$ then for a finite sequence $P_k$ $k \geq 1$ of independent random psd matrices satisfying $\E \|P_k\|_{2p}^{2p} < \infty$, 
+
+% \[\left(  \E  \| \sum_k P_k\|_{2p}^{2p} \right)^{1/2p} \leq \left(  \left \| \sum_k \E P_k  \right \|_{2p}^{1/2} + \sqrt{4p-2} \left( \sum_k \E \|P_k\|_{2p}^{2p} \right)^{1/4p}  \right)^2 \] 
+% \end{fact}
+
+% Since the random variable $Y$ is subexponential, we see that Fact~\ref{fact:covariance-bound} implies that in $n_0 \geq d \log d$ samples, $\E_{D'} \langle Y, v \rangle^2 > 0.99$. We will now use the Matrix Chebyshev inequality and upper bound the probability of our event. 
+
+
+
+
+
+% application of  and an application of the Matrix Chebyshev bound where we upper bound the expectation using Facts~\ref{fact:matrix-rosenthal} and ~\ref{fact:covariance-bound}. By Fact~\ref{fact:covariance-bound} in $d \log d$ samples, $\E \langle Y, v \rangle^2 > 0.99$. By a standard argument combining Fact~\ref{fact:matrix-rosenthal} with the Matrix Chebyshev bound, we get our result. 
+
+
+
+% \end{proof}
+
+
+
+
+We say that a $d \times d$ matrix $A$ is $C'$-well-conditioned if all singular values of $A$ are within a factor of $C'$ of each other.
+
+\begin{lemma}[Certified anti-concentration under linear transformations]\label{lem:linear-transformations-anti-concentration}
+Let $Y$ be $k$-certifiably $(C,\delta)$-anti-concentrated random variable over $\R^d$.
+Let $A$ be any $C'$-well-conditioned linear transformation.
+Then, $AY$ is $k$-certifiably $(C,C'^2\delta)$-anti-concentrated.
+\end{lemma}
+\begin{proof} 
+Let $\|A\|$ be the largest singular value of $A$.
+Let $p$ be a polynomial that witnesses the certifiable anti-concentration of $Y$.
+Let $q(z) = p(z/\|A\|)$.
+We will prove that $q$ witnesses the $k$-certifiable $(C,C'^2 \delta)$-anti-concentration of $AY$.
+
+% Since $Y$ is a $k$-certifiably $(C, \delta)$-anti-concentrated random variable over $\R^d$, there is a univariate polynomial $p$ satisfying $p(0) = 1$ such that
+% \begin{enumerate} 
+% \item $\left \{ \langle Y,v\rangle^2 \leq \delta^2 \E \langle Y,v\rangle^2 \right \}  \sststile{k}{v} \left \{ (p(\langle Y,v\rangle) -1)^2\leq \delta^2 \right \}$.
+% \item $\left \{ \|v\|_2^2 \leq 1 \right \} \sststile{k}{v} \left \{ \|v\|_2^2 \E p^2(\left \langle Y,v\rangle \right) \leq C\delta \right \}$.
+% \end{enumerate}
+% Observe first that if $Y$ is $k$-certifiably anticoncentrated, then so is $cY$.  To see that this is true in the second case as well, note that the inequality above is the same as 
+% \[ \left \{ \|v\|_2^2 \leq \E \langle cY,v\rangle^2  \right \} \sststile{k}{v} \left \{ \|v\|_2^2 \E p^2(\left \langle Y,v\rangle \right) \leq C\delta \right \} \]
+Towards this, observe that:
+\[
+\Set{\iprod{Y,v}^2 \leq \delta^2 \E \iprod{Y, v}^2} \sststile{2}{v} \Set{\iprod{AY,v}^2 \leq \delta^2 \E \iprod{AY,v}^2}\mper
+\]
+\[ \left \{ \langle Y,(A^Tv)/\|A\| \rangle^2 \leq \delta^2 \E \langle Y,(A^Tv)/\|A\| \rangle^2 \right \}  \sststile{k}{v} \left \{ (p(\langle Y,(A^Tv)/\|A\| \rangle) -1)^2\leq \delta^2 \right \}, \]
+this is the same as 
+\[ \left \{ \langle AY,v\rangle^2 \leq \delta^2 \E \langle AY,v\rangle^2 \right \}  \sststile{k}{v} \left \{ (q(\langle AY,v\rangle) -1)^2\leq \delta^2 \right \}. \]
+Where $q = p(x/\|A\|)$. Now, for $w = (A^Tv)/\|A\|$ and any unit vector $v$,
+
+\[ \left \{ \|w\|_2^2 \leq 1 \right \} \sststile{k}{v} \left \{ \|A^Tv\|_2^2 / \|A\|_2^2 \E p^2(\left \langle AY,v\rangle/\|A\| \right) \leq C\delta \right \} \mcom\]
+Thus, 
+\[ \left \{ \|A^Tv\|_2^2 \leq \|A\|^2 \right \} \sststile{k}{v} \left \{ \|A^Tv\|_2^2\E q^2(\left \langle AY,v\rangle \right) \leq C \|A\|_2^2 \delta \right \} \mper\]
+
+However, 
+\[ \left \{ \|v\|_2^2 \leq 1 \right \} \sststile{2}{v} \left \{ \|A^Tv\|_2^2 \leq \|A\|^2 \right \}\mcom \]
+
+and thus, 
+\[  \left \{ \|v\|_2^2 \leq 1 \right \} \sststile{k}{v} \left \{ \|v\|_2^2 \E q^2(\left \langle AY,v\rangle \right) \leq C C'^2 \delta \right \} \mper\] 
+
+% \begin{align*}
+%     \|w\|_2^2 \E p^2(\left \langle Y,w\rangle \right) &= \E p^2\left(\frac{\langle Y,A^T v\rangle}{\|A^Tv\|} \right) = \E p^2\left(\langle AY, v / \|A^Tv\|\rangle \right)\\
+% % \end{align*}
+
+
+% Observing that $\lambda$
+% Let $q(x) = p(x/\lambda_{\max})$. Observe that 
+% \begin{align*}
+%     \|v\|_2^2 \E_{Y} p^2\left( \frac{\langle AY, v \rangle}{\lambda_{\max}} \right) &=  \frac{\|v\|_2^2}{\|A^Tv\|_2^2} \cdot \|A^Tv\|_2^2 \E_{Y} p^2\left( \frac{\langle Y, A^Tv \rangle}{\lambda_{\max}} \right) \\
+%     &= \frac{\|v\|_2^2}{\|w\|_2^2} \cdot \|w\|_2^2 \E_{Y} q^2\left(\langle Y, A^Tv \rangle \right)
+% \end{align*}
+
+
+% Let $\lambda_{\max}$ and $\lambda_{\min}$ denote the largest and smallest eigenvalues of the matrix $A$. We first show that if $\lambda_{\max}=1$, then $AY$ is $k$-certifiably $(C'^2 C, \delta)$-anticoncentrated. Observe that if $\lambda_{\max} = 1$ then 
+% \begin{align*} 
+% \|v\|_2^2 \E_{Y} p(\langle AY, v \rangle)^2 &= \|v\|_2^2 \E_{Y} p(\langle Y, A^Tv \rangle)^2 = \left(\frac{\|v\|_2}{\|A^Tv\|_2}\right)^2 \cdot \|A^Tv\|_2^2 \E_{Y} p(\langle Y, A^Tv \rangle)^2 \\
+% &\leq  \left(\frac{\|v\|_2}{\|A^Tv\|_2}\right)^2 C \delta \leq \frac{C}{\lambda_{\min}^2} \delta = C'^2 C \delta. 
+% \end{align*} 
+% If $\lambda_{\max} > 1$ consider $q(x) := p(x /\lambda_{\max})$. This 
+
+
+% Observing that $\lambd$
+% Let $q(x) = p(x/\lambda_{\max})$. Observe that 
+% \begin{align*}
+%     \|v\|_2^2 \E_{Y} p^2\left( \frac{\langle AY, v \rangle}{\lambda_{\max}} \right) &=  \frac{\|v\|_2^2}{\|A^Tv\|_2^2} \cdot \|A^Tv\|_2^2 \E_{Y} p^2\left( \frac{\langle Y, A^Tv \rangle}{\lambda_{\max}} \right) \\
+%     &= \frac{\|v\|_2^2}{\|w\|_2^2} \cdot \|w\|_2^2 \E_{Y} q^2\left(\langle Y, A^Tv \rangle \right)
+% \end{align*}
+
+
+\end{proof} 
+
+
+\begin{lemma}[Certifiable Anti-Concentration in Boolean Directions]
+Fix $C> 0$. Let $Y$ be a $\R^d$ valued \emph{product} random variable satisfying: 
+\begin{enumerate}
+\item \textbf{Identical Coordinates}: $Y_i$ are identically distributed for every $1 \leq i \leq d$. 
+\item \textbf{Anti-Concentration} For every $v \in \left\{0,\pm\frac{1}{\sqrt{d}} \right\}^d$, $\Pr[|\iprod{Y,v}| \leq \delta \sqrt{\E \iprod{Y,v}^2}] \leq C\delta$.
+\item \textbf{Light tails} For every $v \in \S^{d-1}$, $\Pr[ |\iprod{Y,v}|> t \sqrt{\E \iprod{Y,v}^2}] \leq \exp(-t^{2}/C)$. 
+\end{enumerate}
+Then, $Y$ is $k$-certifiably $(C,\delta)$-anti-concentrated for $k = O\left(\frac{\log^{2}(1/\delta)}{\delta^{2}}\right)$.
+\end{lemma}
+\begin{proof} 
+% To show $k$-certifiable $(C, \delta)$ anticoncentration we need to have degree $k$ sum-of-squares proofs of the following inequalities:
+% \begin{enumerate}
+%     \item for all $x^2 < \delta^2$, $(p(x) - 1)^2 \leq \delta^2$ and
+%     \item for all $\|v\|_2^2 \leq 1$, $\|v\|_2^2 \E_{Y} p(\langle Y, v \rangle)^2 \leq C \delta$. 
+% \end{enumerate}
+We use the $p$ from Lemma~\ref{lem:univppty_box}. To see that $p$ witnesses the anti-concentration of $Y$, once again observe that Lemma~\ref{lem:univppty_box} applies to give us a real life proof of the required statements. We now exhibit a sum of squares proof. Observe that every monomial of even degree $2k$ for any $k \in \mathbb{N}$, $\E_{Y \sim D} \iprod{Y,v}^{2k}$ is a \emph{symmetric} polynomial in $v$ with non-zero coefficients only on even-degree monomials in $v$. This follows by noting that the coordinates of $D$ are independent and identically distributed and $x^2$ is an even function. It is a fact that all symmetric polynomials in $v$ can be expressed as polynomials in the ``power-sum'' polynomials $\|v\|_{2i}^{2i}$ for $i \leq 2t$. However, since $v_i^2 \in \left \{0,  \frac{1}{d} \right \}$ for $i \geq 1$, $\|v\|_{2i}^{2i} = \frac{1}{d^{i-1}} \|v\|_2^2 $. Hence a polynomial in $\|v\|_{2i}^{2i}$ is also a univariate polynomial in $\|v\|_2^2$. Since these are polynomial inequalities, they are also sum-of-squares proofs of these inequalities. 
+
+The observation above implies $ \|v\|_2^2 \E_{Y} p(\langle Y, v \rangle)^2 = \|v\|_2^2 \cdot F(\|v\|_2^2)$ for some degree $k$ univariate polynomial $F$. Since  Since $F$ is a univariate polynomial and $\|v\|_2^2\leq 1$ is an ``interval constraint'' by applying Fact~\ref{fact:univariate-interval}, we get:
+% \begin{equation} \label{eq:final-univariate-step}
+$\sststile{2t}{\|v\|_2^2} \Set{\|v\|_2^2 F(\|v\|_2^2) \leq C \delta}$.
+% \end{equation}
+Recalling the fact that $ \|v\|_2^2 \E_{Y} p(\langle Y, v \rangle)^2 = \|v\|_2^2 \cdot F(\|v\|_2^2)$, this completes the proof. 
+\end{proof}
+
+
+
+% To finish the proof, we observe:
+
+% First observe that for any $i$:
+% \[
+% \Set{v_i^2 = \frac{1}{\sqrt{d}} } \sststile{4}{v} \Set{(v_i -\ell^*_i)^3 = (v_i - \ell^*_i)} \mper
+% \]
+
+% Using this fact repeatedly yields:
+% \[
+% \Set{v_i^2 = \frac{1}{\sqrt{d}} \forall i} \sststile{2i}{v} \Set{(v_i -\ell^*_i)^{2i} = (v_i - \ell^*_i)^2} \mper
+% \]
+
+% This implies that:
+% \[
+% \Set{v_i^2 = \frac{1}{\sqrt{d}} \forall i} \sststile{2i}{v} \Set{\sum_{i =1}^d(v_i -\ell^*_i)^{2i} = \sum_{i = 1}^d(v_i - \ell^*_i)^2} \mper
+% \]
+
+% Thus,  for some univariate polynomial $F$ of degree at most $2t$,
+% \begin{equation} \label{eq:reduce-to-univariate}
+% \Set{v_i^2 = \frac{1}{\sqrt{d}} \forall i} \sststile{2t}{v} \Set{\E_{x \sim D} p^2(\iprod{x,v-\ell^*}) = F(\|v-\ell^*\|_2^2)} \mper
+% \end{equation}
+
