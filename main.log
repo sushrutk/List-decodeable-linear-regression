@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.4.16)  18 MAY 2019 09:55
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.4.16)  18 MAY 2019 10:26
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1751,51 +1751,50 @@ pdfTeX warning (ext4): destination with the same identifier (name{page.2}) has
 been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.45 \item C
-            onstruct $\cO$ by  choosing the remaining $(1-\alpha)n$ equation...
-[2] [3] [4]) (./content/overview.tex
+l.46 \end{enumerate}
+                     [2] [3] [4]) (./content/overview.tex
 LaTeX Font Info:    Font shape `T1/zpltlf/bx/it' in size <10.95> not available
 (Font)              Font shape `T1/zpltlf/b/it' tried instead on input line 12.
 
 LaTeX Font Info:    Font shape `T1/zpltlf/b/it' will be
 (Font)              scaled to size 10.95pt on input line 12.
- [5] [6] [7] [8]) (./content/prelims.tex
+ [5] [6] [7])
+(./content/prelims.tex [8]
 LaTeX Font Info:    Font shape `T1/zpltlf/m/it' will be
 (Font)              scaled to size 8.0pt on input line 40.
 LaTeX Font Info:    Font shape `T1/zpltlf/m/it' will be
 (Font)              scaled to size 6.1pt on input line 40.
-
-[9]
+ [9]
 LaTeX Font Info:    Font shape `T1/zplsups/m/it' will be
 (Font)              scaled to size 10.95pt on input line 64.
  [10]) (./content/algorithm.tex [11]
 Package mdframed Info: mdframed detected package amsthm 
  changed the theorem header of amsthm
-(mdframed)              on input line 80.
+(mdframed)              on input line 29.
  [12]
-Overfull \hbox (33.16951pt too wide) detected at line 173
+Overfull \hbox (33.16951pt too wide) detected at line 118
 []
  []
 
-[13]
-LaTeX Font Info:    Try loading font information for T1+qhv on input line 234.
- (/usr/local/texlive/2018/texmf-dist/tex/latex/tex-gyre/t1qhv.fd
+LaTeX Font Info:    Try loading font information for T1+qhv on input line 179.
+(/usr/local/texlive/2018/texmf-dist/tex/latex/tex-gyre/t1qhv.fd
 File: t1qhv.fd 2009/09/25 v1.2 font definition file for T1/qhv
 )
 LaTeX Font Info:    Font shape `T1/qhv/m/n' will be
-(Font)              scaled to size 10.29301pt on input line 234.
+(Font)              scaled to size 10.29301pt on input line 179.
 Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `qhv' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 LaTeX Font Info:    Font shape `T1/qhv/m/n' will be
-(Font)              scaled to size 7.52002pt on input line 234.
+(Font)              scaled to size 7.52002pt on input line 179.
 LaTeX Font Info:    Font shape `T1/qhv/m/n' will be
-(Font)              scaled to size 5.73401pt on input line 234.
+(Font)              scaled to size 5.73401pt on input line 179.
+ [13]
 LaTeX Font Info:    Font shape `T1/zpltlf/m/n' will be
-(Font)              scaled to size 8.0pt on input line 249.
+(Font)              scaled to size 8.0pt on input line 194.
 LaTeX Font Info:    Font shape `T1/zpltlf/m/n' will be
-(Font)              scaled to size 6.1pt on input line 249.
+(Font)              scaled to size 6.1pt on input line 194.
  [14]
 [15] [16] [17] [18] [19]) (./content/lower-bound.tex [20]) (./main.bbl
 (./main.brf)
@@ -1879,18 +1878,18 @@ Package atveryend Info: Empty hook `AfterLastShipout' on input line 723.
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 723.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 723.
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: 5778045C702D33BD5EA4EFC93DFEC728;989.
+(rerunfilecheck)             Checksum: 5C95F7138CABDE7434F04C1960A7F89A;924.
 Package rerunfilecheck Info: File `main.brf' has not changed.
-(rerunfilecheck)             Checksum: 62EB0574588ED900EAA27C242377777E;3430.
+(rerunfilecheck)             Checksum: 108E525828FBC56001D6C72F4A509107;3425.
  ) 
 Here is how much of TeX's memory you used:
- 36068 strings out of 492649
- 675799 string characters out of 6129622
- 775800 words of memory out of 5000000
- 38810 multiletter control sequences out of 15000+600000
+ 36072 strings out of 492649
+ 675949 string characters out of 6129622
+ 776973 words of memory out of 5000000
+ 38813 multiletter control sequences out of 15000+600000
  755283 words of font info for 470 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 55i,13n,92p,10410b,559s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 55i,13n,92p,10410b,555s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2018/texmf-dist/fonts/enc/dvips/tex-gyre/q-ec.enc}{/usr/l
 ocal/texlive/2018/texmf-dist/fonts/enc/dvips/newpx/ecsups.enc}{/usr/local/texli
 ve/2018/texmf-dist/fonts/enc/dvips/newtx/ntx-ec-tlf.enc}{/usr/local/texlive/201
@@ -1913,10 +1912,10 @@ newpx/zplb.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/newpx/zpl
 bi.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/newpx/zplr.pfb></
 usr/local/texlive/2018/texmf-dist/fonts/type1/public/newpx/zplri.pfb></usr/loca
 l/texlive/2018/texmf-dist/fonts/type1/public/newpx/zplx-regular.pfb>
-Output written on main.pdf (31 pages, 364772 bytes).
+Output written on main.pdf (31 pages, 366944 bytes).
 PDF statistics:
  768 PDF objects out of 1000 (max. 8388607)
  710 compressed objects within 8 object streams
- 211 named destinations out of 1000 (max. 500000)
- 51325 words of extra memory for PDF output out of 51595 (max. 10000000)
+ 212 named destinations out of 1000 (max. 500000)
+ 51317 words of extra memory for PDF output out of 51595 (max. 10000000)
 

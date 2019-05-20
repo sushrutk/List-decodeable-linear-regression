@@ -1,7 +1,7 @@
-This is BibTeX, Version 0.99d (TeX Live 2016)
-Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+This is BibTeX, Version 0.99d (TeX Live 2018)
+Capacity: max_strings=100000, hash_size=100000, hash_prime=85009
 The top-level auxiliary file: main.aux
-The style file: amsalpha.bst
+The style file: plain.bst
 Database file #1: bib/mathreview.bib
 Database file #2: bib/dblp.bib
 Database file #3: bib/custom.bib
@@ -42,57 +42,48 @@ Warning--I didn't find a database entry for "DBLP:conf/colt/2018"
 Warning--I didn't find a database entry for "conf/soda/2019sosa"
 Warning--I didn't find a database entry for "DBLP:conf/nips/2017"
 Warning--I didn't find a database entry for "DBLP:conf/stoc/2018"
-Warning--missing pages in journals/corr/AwasthiBL13
-Warning--missing pages in DBLP:journals/corr/BalakrishnanWY14
-Warning--missing pages in DBLP:journals/corr/DiakonikolasKKL16
-Warning--missing pages in DBLP:journals/corr/DiakonikolasKK017a
-Warning--missing pages in journals/corr/abs-1803-02815
-Warning--missing pages in DBLP:journals/corr/DiakonikolasKS17
-Warning--missing note in HopkinsLi17
-Warning--missing note in KothariSteinhardt17
-Warning--missing pages in 2017KS
-Warning--missing pages in journals/corr/abs-1802-06485
-Warning--missing journal name in MR0426989
-Warning--missing journal, volume, and year in MR0426989
-You've used 40 entries,
-            2624 wiz_defined-function locations,
-            825 strings with 11953 characters,
-and the built_in function-call counts, 18175 in all, are:
-= -- 1729
-> -- 899
-< -- 9
-+ -- 320
-- -- 313
-* -- 1471
-:= -- 2830
-add.period$ -- 40
-call.type$ -- 40
-change.case$ -- 272
-chr.to.int$ -- 38
-cite$ -- 52
-duplicate$ -- 755
-empty$ -- 1348
-format.name$ -- 354
-if$ -- 3774
-int.to.chr$ -- 3
-int.to.str$ -- 0
-missing$ -- 79
-newline$ -- 131
-num.names$ -- 122
-pop$ -- 298
+Warning--empty note in HopkinsLi17
+Warning--empty note in KothariSteinhardt17
+Warning--empty journal in MR0426989
+You've used 43 entries,
+            2118 wiz_defined-function locations,
+            780 strings with 12134 characters,
+and the built_in function-call counts, 17213 in all, are:
+= -- 1775
+> -- 730
+< -- 25
++ -- 289
+- -- 241
+* -- 1078
+:= -- 2634
+add.period$ -- 141
+call.type$ -- 43
+change.case$ -- 247
+chr.to.int$ -- 0
+cite$ -- 46
+duplicate$ -- 760
+empty$ -- 1329
+format.name$ -- 241
+if$ -- 3806
+int.to.chr$ -- 0
+int.to.str$ -- 43
+missing$ -- 42
+newline$ -- 218
+num.names$ -- 90
+pop$ -- 273
 preamble$ -- 1
-purify$ -- 311
+purify$ -- 205
 quote$ -- 0
-skip$ -- 681
+skip$ -- 647
 stack$ -- 0
-substring$ -- 1110
-swap$ -- 196
-text.length$ -- 9
-text.prefix$ -- 5
+substring$ -- 1121
+swap$ -- 305
+text.length$ -- 25
+text.prefix$ -- 0
 top$ -- 0
-type$ -- 312
-warning$ -- 12
-while$ -- 176
-width$ -- 47
-write$ -- 438
+type$ -- 168
+warning$ -- 3
+while$ -- 160
+width$ -- 45
+write$ -- 482
 (There were 10 error messages)

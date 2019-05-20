@@ -3,21 +3,21 @@
 \contentsline {paragraph}{List-Decodable Learning via the Sum-of-Squares Method}{2}{section*.2}
 \contentsline {subsection}{\numberline {1.1}Our Results}{2}{subsection.1.1}
 \contentsline {paragraph}{Certifiably anti-concentrated distributions}{4}{section*.3}
-\contentsline {subsection}{\numberline {1.2}Concurrent Work}{5}{subsection.1.2}
+\contentsline {paragraph}{Concurrent Work}{5}{section*.4}
 \contentsline {section}{\numberline {2}Overview of our Technique}{5}{section.2}
-\contentsline {paragraph}{An \emph {inefficient} algorithm}{5}{section*.4}
-\contentsline {paragraph}{Anti-Concentration}{5}{section*.5}
-\contentsline {paragraph}{Identifiability via anti-concentration}{6}{section*.6}
-\contentsline {paragraph}{An efficient algorithm}{7}{section*.7}
-\contentsline {paragraph}{\textup {\hbox {\mathsurround \z@ \normalfont (\ignorespaces \ref {eq:inliers-guess-well}\unskip \@@italiccorr )}} via anti-concentration}{8}{section*.9}
-\contentsline {paragraph}{SoSizing Anti-Concentration}{8}{section*.10}
+\contentsline {paragraph}{An \emph {inefficient} algorithm}{5}{section*.5}
+\contentsline {paragraph}{Anti-Concentration}{5}{section*.6}
+\contentsline {paragraph}{Identifiability via anti-concentration}{6}{section*.7}
+\contentsline {paragraph}{An efficient algorithm}{7}{section*.8}
+\contentsline {paragraph}{\textup {\hbox {\mathsurround \z@ \normalfont (\ignorespaces \ref {eq:inliers-guess-well}\unskip \@@italiccorr )}} via anti-concentration}{8}{section*.10}
+\contentsline {paragraph}{SoSizing Anti-Concentration}{8}{section*.11}
 \contentsline {section}{\numberline {3}Preliminaries}{9}{section.3}
 \contentsline {subsection}{\numberline {3.1}Pseudo-distributions}{9}{subsection.3.1}
 \contentsline {subsection}{\numberline {3.2}Sum-of-squares proofs}{10}{subsection.3.2}
-\contentsline {section}{\numberline {4}Algorithm for List-Decodable Robust Regression}{12}{section.4}
+\contentsline {section}{\numberline {4}Algorithm for List-Decodable Robust Regression}{11}{section.4}
 \contentsline {subsection}{\numberline {4.1}List-Decodable Regression for Boolean Vectors}{15}{subsection.4.1}
-\contentsline {section}{\numberline {5}Certifiably Anti-Concentrated Distributions}{16}{section.5}
+\contentsline {section}{\numberline {5}Certifiably Anti-Concentrated Distributions}{17}{section.5}
 \contentsline {section}{\numberline {6}Information-Theoretic Lower Bounds for List-Decodable Regression}{20}{section.6}
-\contentsline {section}{References}{21}{section*.18}
+\contentsline {section}{References}{22}{section*.19}
 \contentsline {section}{\numberline {A}Polynomial Approximation for Core-Indicator}{26}{appendix.A}
 \contentsline {section}{\numberline {B}Brute-force search can generate a $\qopname \relax o{exp}(d)$ size list}{28}{appendix.B}

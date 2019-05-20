@@ -595,6 +595,8 @@ INPUT /usr/local/texlive/2018/texmf-dist/fonts/tfm/public/newtx/rtxmio.tfm
 INPUT /usr/local/texlive/2018/texmf-dist/fonts/tfm/public/txfonts/txsyb.tfm
 INPUT /usr/local/texlive/2018/texmf-dist/fonts/tfm/adobe/times/ptmr8r.tfm
 INPUT /usr/local/texlive/2018/texmf-dist/fonts/tfm/public/boondox/zxxrl7z.tfm
+INPUT content/prelims.tex
+INPUT content/prelims.tex
 INPUT /usr/local/texlive/2018/texmf-dist/fonts/vf/public/newpx/zplmia.vf
 INPUT /usr/local/texlive/2018/texmf-dist/fonts/tfm/public/newtx/ntxmia.tfm
 INPUT /usr/local/texlive/2018/texmf-dist/fonts/tfm/public/newpx/zplr-x.tfm
@@ -609,8 +611,6 @@ INPUT /usr/local/texlive/2018/texmf-dist/fonts/tfm/public/newtx/rtxmio.tfm
 INPUT /usr/local/texlive/2018/texmf-dist/fonts/tfm/public/txfonts/txsyb.tfm
 INPUT /usr/local/texlive/2018/texmf-dist/fonts/tfm/adobe/times/ptmr8r.tfm
 INPUT /usr/local/texlive/2018/texmf-dist/fonts/tfm/public/boondox/zxxrl7z.tfm
-INPUT content/prelims.tex
-INPUT content/prelims.tex
 INPUT /usr/local/texlive/2018/texmf-dist/fonts/tfm/public/newpx/zpl-Italic-tlf-t1.tfm
 INPUT /usr/local/texlive/2018/texmf-dist/fonts/tfm/public/newpx/zpl-Regular-tlf-ot1.tfm
 INPUT /usr/local/texlive/2018/texmf-dist/fonts/tfm/public/newpx/zplmi1.tfm
