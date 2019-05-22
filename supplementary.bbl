@@ -30,6 +30,13 @@ Boaz Barak and Ankur Moitra.
 \newblock In {\em {COLT}}, volume~49 of {\em {JMLR} Workshop and Conference
   Proceedings}, pages 417--445. JMLR.org, 2016.
 
+\bibitem{BarakS16}
+Boaz Barak and David Steurer.
+\newblock Proofs, beliefs, and algorithms through the lens of sum-of-squares,
+  2016.
+\newblock Lecture notes in preparation, available on
+  \url{http://sumofsquares.org}.
+
 \bibitem{bernholt2006robust}
 Thorsten Bernholt.
 \newblock Robust estimators are hard to compute.
@@ -59,6 +66,14 @@ Yudong Chen, Xinyang Yi, and Constantine Caramanis.
 Richard~D. De~Veaux.
 \newblock Mixtures of linear regressions.
 \newblock {\em Comput. Statist. Data Anal.}, 8(3):227--245, 1989.
+
+\bibitem{DGJSV09}
+Ilias Diakonikolas, Parikshit Gopalan, Ragesh Jaiswal, Rocco~A. Servedio, and
+  Emanuele Viola.
+\newblock Bounded independence fools halfspaces.
+\newblock In {\em 50th Annual {IEEE} Symposium on Foundations of Computer
+  Science, {FOCS} 2009, October 25-27, 2009, Atlanta, Georgia, {USA}}, pages
+  171--180, 2009.
 
 \bibitem{journals/corr/abs-1803-02815}
 Ilias Diakonikolas, Gautam Kamath, Daniel~M. Kane, Jerry~Li 0001, Jacob
@@ -111,10 +126,39 @@ P.~Erdös.
 \newblock On a lemma of littlewood and offord.
 \newblock {\em Bull. Amer. Math. Soc.}, 51(12):898--902, 12 1945.
 
+\bibitem{MR2346548}
+Alexandre Eremenko and Peter Yuditskii.
+\newblock Uniform approximation of {${\rm sgn}\,x$} by polynomials and entire
+  functions.
+\newblock {\em J. Anal. Math.}, 101:313--324, 2007.
+
+\bibitem{MR2441914}
+Alexandre Eremenko and Peter Yuditskii.
+\newblock An extremal problem for a class of entire functions.
+\newblock {\em C. R. Math. Acad. Sci. Paris}, 346(15-16):825--828, 2008.
+
+\bibitem{MR2837087}
+Alexandre Eremenko and Peter Yuditskii.
+\newblock Polynomials of the best uniform approximation to {${\rm sgn}(x)$} on
+  two intervals.
+\newblock {\em J. Anal. Math.}, 114:285--315, 2011.
+
 \bibitem{MR2757044}
 Susana Faria and Gilda Soromenho.
 \newblock Fitting mixtures of linear regressions.
 \newblock {\em J. Stat. Comput. Simul.}, 80(1-2):201--225, 2010.
+
+\bibitem{PolyConc}
+Friedrich {G{\"o}tze}, Holger {Sambale}, and Arthur {Sinulis}.
+\newblock {Concentration inequalities for polynomials in
+  $\alpha$-sub-exponential random variables}.
+\newblock {\em arXiv e-prints}, page arXiv:1903.05964, Mar 2019.
+
+\bibitem{MR625550-Grotschel81}
+M.~Gr\"otschel, L.~Lov\'asz, and A.~Schrijver.
+\newblock The ellipsoid method and its consequences in combinatorial
+  optimization.
+\newblock {\em Combinatorica}, 1(2):169--197, 1981.
 
 \bibitem{hampel2011robust}
 Frank~R Hampel, Elvezio~M Ronchetti, Peter~J Rousseeuw, and Werner~A Stahel.
@@ -176,6 +220,20 @@ Kevin~A. Lai, Anup~B. Rao, and Santosh Vempala.
 \newblock Agnostic estimation of mean and covariance.
 \newblock In {\em {FOCS}}, pages 665--674. {IEEE} Computer Society, 2016.
 
+\bibitem{MR1846160-Lasserre01}
+Jean~B. Lasserre.
+\newblock New positive semidefinite relaxations for nonconvex quadratic
+  programs.
+\newblock In {\em Advances in convex analysis and global optimization
+  ({P}ythagorion, 2000)}, volume~54 of {\em Nonconvex Optim. Appl.}, pages
+  319--331. Kluwer Acad. Publ., Dordrecht, 2001.
+
+\bibitem{laurent2009sums}
+Monique Laurent.
+\newblock Sums of squares, moment matrices and optimization over polynomials.
+\newblock In {\em Emerging applications of algebraic geometry}, pages 157--270.
+  Springer, 2009.
+
 \bibitem{DBLP:conf/colt/LiL18}
 Yuanzhi Li and Yingyu Liang.
 \newblock Learning mixtures of linear regressions with nearly optimal
@@ -203,15 +261,22 @@ Ankur Moitra and Gregory Valiant.
 \newblock Settling the polynomial learnability of mixtures of gaussians.
 \newblock In {\em {FOCS}}, pages 93--102. {IEEE} Computer Society, 2010.
 
+\bibitem{MR1748764-Nesterov00}
+Yurii Nesterov.
+\newblock Squared functional systems and optimization problems.
+\newblock In {\em High performance optimization}, volume~33 of {\em Appl.
+  Optim.}, pages 405--440. Kluwer Acad. Publ., Dordrecht, 2000.
+
+\bibitem{parrilo2000structured}
+Pablo~A Parrilo.
+\newblock {\em Structured semidefinite programs and semialgebraic geometry
+  methods in robustness and optimization}.
+\newblock PhD thesis, California Institute of Technology, 2000.
+
 \bibitem{journals/corr/abs-1802-06485}
 Adarsh Prasad, Arun~Sai Suggala, Sivaraman Balakrishnan, and Pradeep Ravikumar.
 \newblock Robust estimation via robust gradient estimation.
 \newblock {\em CoRR}, abs/1802.06485, 2018.
-
-\bibitem{RY19}
-Prasad Raghavendra and Morris Yau.
-\newblock List decodable learning via sum of squares.
-\newblock In {\em Manuscript}, 2019.
 
 \bibitem{MR2407948-Rudelson08}
 Mark Rudelson and Roman Vershynin.
@@ -226,6 +291,11 @@ Hanie Sedghi, Majid Janzamin, and Anima Anandkumar.
 \newblock In {\em {AISTATS}}, volume~51 of {\em {JMLR} Workshop and Conference
   Proceedings}, pages 1223--1231. JMLR.org, 2016.
 
+\bibitem{MR939596-Shor87}
+N.~Z. Shor.
+\newblock Quadratic optimization problems.
+\newblock {\em Izv. Akad. Nauk SSSR Tekhn. Kibernet.}, (1):128--139, 222, 1987.
+
 \bibitem{MR2965282-Tao12}
 Terence Tao and Van Vu.
 \newblock The {L}ittlewood-{O}fford problem in high dimensions and a conjecture
@@ -236,6 +306,16 @@ Terence Tao and Van Vu.
 John~W. Tukey.
 \newblock Mathematics and the picturing of data.
 \newblock pages 523--531, 1975.
+
+\bibitem{HermiteNum}
+Eric~W. Weisstein.
+\newblock Hermite number from mathworld.
+\newblock \url{http://mathworld.wolfram.com/HermiteNumber.html}.
+
+\bibitem{wiki-singleton}
+Wikipedia.
+\newblock Singleton bound.
+\newblock \url{https://en.wikipedia.org/wiki/Singleton_bound}.
 
 \bibitem{2013arXiv1310.3745Y}
 Xinyang {Yi}, Constantine {Caramanis}, and Sujay {Sanghavi}.
