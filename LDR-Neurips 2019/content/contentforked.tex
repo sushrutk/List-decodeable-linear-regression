@@ -1,0 +1,749 @@
+
+%!TEX root = ../main.tex
+
+
+\section{Our Results}
+We first describe our model for generating samples for list-decodable regression.
+
+\begin{model}[Robust Linear Regression]
+Let $\Lin_D(\alpha,\ell^*)$ denote the following probabilistic process to generate $n$ noisy linear equations $\cS = \{ \langle x_i, a \rangle = y_i\mid 1\leq i \leq n\}$ in $\R^d$:
+\begin{enumerate}
+\item for some $\alpha > 0$, construct $\In \subseteq \cS$ by picking $\alpha n$ i.i.d. samples $x_i \sim D$ and setting $y_i = \langle x_i,\ell \rangle$ for some $\ell \in \R^d$ such that $\|\ell\|_2 =1$, and ,
+\item select $\Ou \subseteq \cS$ to be any arbitrary, potentially adversarially chosen collection of $(1-\alpha)n$ linear equations.
+\item Output $\cS = \In \cup \Ou$.
+\end{enumerate}
+\label{model:random-equations}
+\end{model}
+
+% Our algorithm naturally extends to handle additive noise in the labels. 
+% We will focus mostly on the noiseless case for clarity of exposition.
+
+We think of $\In$ as the \emph{inliers} and $\Ou$ as the \emph{outliers} in this model. 
+Thus, $\alpha$ controls the amount of ``signal'' (fraction of inliers) in the input. 
+An $\eta$-approximate algorithm for list-decodable regression takes input a sample from $\Lin_D(\alpha,\ell^*)$ and outputs a \emph{constant} (depending on $\alpha$) size list $L$ of linear functions such that there is some $\ell \in L$ that is $\eta$-close to $\ell^*$. 
+
+Our main result gives a polynomial time algorithm for list-decodable regression whenever the distribution $D$ is \emph{certifiably} anti-concentrated. Let us first define this property. 
+
+In the following, we will use the easily verified fact that for any degree $k$ univariate polynomial $p$, and any distribution $D$ on $\R^d$, $\E_{x \sim D} p(\iprod{x,v})^2$ is a polynomial in $v$. 
+
+\begin{definition}[Certifiable Anti-Concentration]
+A $\R^d$-valued zero-mean random variable $Y$ is $(C,\delta)$-\emph{anti-concentrated} if $\Pr[ |\iprod{Y,v}| \leq \delta \sqrt{ \E \iprod{Y,v}^2}]\leq C\delta$. $Y$ is $k$-\emph{certifiably} $(C,\delta)$-anti-concentrated if there is a univariate polynomial $p$ such that there is a degree $k$ sum-of-squares proof of the following two inequalities: for all $x^2 \leq \delta^2$, $(p(x) - 1)^2 \leq \delta^2$ and for all $\|v\|^2 \leq 1$,  $\|v\|^2 \E_{Y} p(\iprod{Y,v})^2 \leq C\delta$. 
+\end{definition} 
+
+
+% Given samples drawn from the model, the natural question is to algorithmically find an approximation to $\ell$, the hidden linear function that labels the inliers $\In$ correctly. However, since $\alpha \ll 1/2$, finding $\ell$ uniquely is information theoretically impossible. This is because one could simply choose $\Ou$ to be a collection of $(1-\alpha)/\alpha$ copies of $\In$ labeled by distinct linear functions in which case, the inliers are information theoretically indistinguishable from any of the $\Omega(1/\alpha)$ sub-collections in $\Ou$. 
+
+% For any positive semidefinite matrix $\Sigma$, denote $\cond(\Sigma) = \lambda_{max}(\Sigma)/\lambda_{min}(\Sigma)$ where $\lambda_{max}$ and $\lambda_{min}$ denote the largest and smallest eigenvalues of $\Sigma$ respectively. 
+
+% Our main result shows that for arbitrarly small constant $\alpha$s, there's an efficient algorithm to output a list of size that is an absolute constant (depending only on $\alpha$) so that the linear function labeling the inliers $\In$ will be contained (up to a small error) in this list.
+We are now ready to state our main result.
+
+\begin{theorem}[List-Decodable Regression] \label{thm:main}
+For every $\alpha, \eta > 0$ and a $k$-certifiably $(C,\alpha \eta/10C)$-anti-concentrated distribution $D$ on $\R^d$, there exists an algorithm that takes input a sample generated according to $\Lin_D(\alpha,\ell^*)$ and outputs a list $L$ of size $O(1/\alpha)$ such that there is an $\ell \in L$ satisfying $\| \ell - \ell^*\|_2^2 < \eta$ with probability at least $0.99$ over the draw of the sample. The algorithm needs a sample of size $n = d^{O(k)}$ and runs in time $n^{O(k)} = d^{O(k^2)}$.
+\end{theorem} 
+
+
+\begin{remark}[Tolerating Additive Noise]
+Our algorithm works in the presence of some additive noise. For additive noise in the labels with variance $\zeta^2$, our algorithm, in the same running time and samples, outputs a list of size $O(1/\alpha)$ that contains an $\ell$ satisfying $\|\ell-\ell^*\|_2^2 \leq \frac{\zeta^2}{\alpha^2} + \eta$. Since $\ell^*$ has unit norm, this guarantee is meaningful only when $\zeta \ll \alpha$. It is not clear if a better noise-tolerance is possible for list-decodable regression.
+\end{remark}
+
+
+
+\paragraph{Which distributions are certifiably anti-concentrated?} In Section~\ref{sec:certified-anti-concentration}, we show that some natural and well-studied families of distributions on $\R^d$ are certifiably anti-concentrated. This includes the standard gaussian distribution and more generally any anti-concentrated spherically symmetric distribution with subgaussian/subexponential tails. We also show that the family of certifiably anticoncentrated distributions is closed under simple operations such as applying well-conditioned linear transformations or sampling. 
+
+In particular, this gives us the following corollary:
+\begin{corollary}[List-Decodable Regression for Gaussian Inliers]
+For every $\alpha, \eta > 0$ there's an algorithm for list-decodable regression for the model $\Lin_D(\alpha,\ell^*)$ with $D = \cN(0,\Sigma)$ with $\lambda_{\max}(\Sigma)/\lambda_{min}(\Sigma) = O(1)$ that needs $n = d^{O(\frac{1}{\alpha^2 \eta^2})}$  samples and runs in time $n^{O(\frac{1}{\alpha^2 \eta^2})} = d^{O(\frac{1}{\alpha^4 \eta^4})}$.
+\end{corollary} 
+
+We note that certifiably anti-concentrated distributions are more restrictive compared to the families of distributions for which the most general robust estimation algorithms work~\cite{2017KS,KothariSteinhardt17,DBLP:conf/colt/KlivansKM18}. This is inherent to some extent. The families of distributions considered in this prior works do not satisfy anti-concentration in general. And as we discuss in more detail in Section~\ref{sec:overview}, anti-concentration is information-theoretically \emph{necessary} (Proposition~\ref{prop:anti-concentration-is-necessary}) for list-decodable regression. 
+
+Even within the family of anti-concentrated distributions, our current techniques only serve to prove certifiable anti-concentration for a limited subclass. We rescue this to an extent for the special case when $\ell^*$ in the model $\Lin(\alpha,\ell^*)$ is a "Boolean vector", i.e., has all coordinates of equal magnitude. In this case, we can define a slightly weaker notion of certifiable anti-concentration that is satisfied by a broader family of distributions than the notion above. 
+
+Observe that if $v \in \R^d$ satisfies $v_i^3 = \frac{1}{d} v_i$ for every $i$, then the coordinates of $v$ are in $\{0,\pm \frac{1}{\sqrt{d}}\}$.
+\begin{definition}[Certifiable Anti-Concentration for Boolean Vectors]
+A $\R^d$ valued random variable $Y$ is $k$-\emph{certifiably} $(C,\delta)$-anti-concentrated in \emph{Boolean directions} if there is a univariate polynomial $p$ such that there is a degree $k$ sum-of-squares proof of the following two inequalities: for all $x^2 \leq \delta^2$, $(p(x) - 1)^2 \leq \delta^2$ and for all $v$ such that $v_i^3 = \frac{1}{d} v_i$ for all $i$, $\|v\|^2 \E_{Y} p(\iprod{Y,v})^2 \leq C\delta$. 
+\end{definition} 
+
+
+
+% \begin{theorem}[List-Decoding Random Linear Equations, Gaussian Case]
+% For every $\alpha, \eta$, there's a algorithm that takes input a sample generated according to $\Lin_D(\alpha,n,\ell^*)$ in $\R^d$ for $D = \cN(0,\Sigma)$ with $\cond(\Sigma) = O(1)$ and outputs a list $L$ of size $O(1/\alpha)$ such that there's an $\ell \in L$ satisfying $\|\ell-\ell^*\| <\eta$ with probability at least $0.99$ over the draw of the sample. The algorithm requires a sample of size $n \geq d^{O(\frac{1}{\alpha^2 \eta^2})}$ and runs in time $n^{O(\frac{1}{\alpha^2 \eta^2})} = d^{O(\frac{1}{\alpha^4 \eta^4})}$. \label{thm:main}
+% \end{theorem}  
+
+% \Pnote{editing here}We can extend this result to more general distributions with the additional restriction that $\ell^* \in \pm \Set{\frac{1}{\sqrt{d}}}^d$.
+
+
+In Section~\ref{sec:certified-anti-concentration}, we show that the following class of random variables are certifiably anti-concentrated in Boolean directions. 
+\begin{lemma}[Certifiable Anti-Concentration in Boolean Directions]
+Fix $C> 0$. Let $Y$ be a $\R^d$ valued \emph{product} random variable satisfying: 
+\begin{enumerate}
+\item \textbf{Identical Coordinates}: $Y_i$ are identically distributed for every $1 \leq i \leq d$. 
+\item \textbf{Anti-Concentration} For every $v \in \{0,\pm\frac{1}{\sqrt{d}}\}^d$, $\Pr[|\iprod{Y,v}| \leq \delta \sqrt{\E \iprod{Y,v}^2}] \leq C\delta$.
+\item \textbf{Light tails} For every $v \in \S^{d-1}$, $\Pr[ |\iprod{x,v}|> t \sqrt{\E \iprod{x,v}^2}] \leq \exp(-t^{2/t}/C)$. 
+\end{enumerate}
+Then, $Y$ is $k$-certifiably $(C,\delta)$-anti-concentrated for $k = O(\frac{\log^{2t}(1/\delta)}{\delta^{2t}})$.
+\end{lemma}
+
+As a corollary, we obtain that the uniform distribution on the Boolean hypercube $\{\pm 1\}^d$, the solid hypercube $[0,1]^d$ and more generally, $p$-biased product distributions on these domains with $p$ bounded away from $0,1$ are certifiably anti-concentrated in Boolean directions. 
+
+
+
+
+\begin{theorem}[List-Decodable Regression in Boolean Directions]
+For every $\alpha, \eta$, there's a algorithm that takes input a sample generated according to $\Lin_D(\alpha,n,\ell^*)$ in $\R^d$ for  $D$ that is $k$-certifiably $(C,\alpha \eta/10C)$-anti-concentrated in Boolean directions and $\ell^* \in \Set{\pm{\frac{1}{\sqrt{d}}}}^d$ and outputs a list $L$ of size $O(1/\alpha)$ such that there's an $\ell \in L$ satisfying $\|\ell-\ell^*\| <\eta$ with probability at least $0.99$ over the draw of the sample. The algorithm requires a sample of size $n \geq d^{O(\frac{1}{\alpha^2 \eta^2})}$ and runs in time $n^{O(k)} = d^{O(k^2)}$. \label{thm:main2}
+\end{theorem}
+
+In particular, this yields a $d^{O(\frac{1}{\alpha^2 \eta^2})}$-sample and $d^{O(\frac{1}{\alpha^4 \eta^4})}$-time algorithm for list-decodable regression when $D$ is the uniform distribution on the Boolean hypercube/solid hypercube.
+
+
+\section{Overview of our Technique} \label{sec:overview}
+In this section, we illustrate the important ideas in our algorithm for list-decodable regression. 
+Thus, given a sample $\cS = \{(x_i,y_i)\}_{i = 1}^n$ from $\Lin(\alpha,n,\ell*)$, we must construct a constant-size list $L$ of linear functions containing an $\ell$ close to $\ell^*$. 
+
+Our algorithm is based on the sum-of-squares method. We build on the ``identifiability to algorithms'' paradigm developed in several prior works~\cite{DBLP:conf/colt/BarakM16,MR3388192-Barak15,DBLP:conf/focs/MaSS16,2017KS,HopkinsLi17,KothariSteinhardt17,DBLP:conf/colt/KlivansKM18} with some important conceptual differences discussed at the end of this section. 
+
+\paragraph{An \emph{inefficient} algorithm} Let's start by designing an inefficient algorithm for the problem. This may seem simple at the outset. But as we'll see, solving this relaxed problem will rely on some important conceptual ideas that will serve as a starting point for our efficient algorithm. 
+
+Without computational constraints, it is natural to just return the list $L$ of all linear functions $\ell$ that correctly labels all examples in some $S \subseteq \cS$ of size $\alpha n$. We call such an $S$, a large, \emph{soluble} set. True inliers $\cI$ satisfy our search criteria so $\ell^* \in L$. However, it's not hard to show (Proposition~\ref{prop:anti-concentration-is-necessary}) that one can choose outliers so that the list so generated has size $\exp(n)$ (far from a fixed constant!).
+
+A potential fix is to search instead for a \emph{soluble partition} of $\cS$ into disjoint $S_1, S_2,\ldots, S_k$ and  linear functions $\ell_1, \ell_2, \ldots, \ell_k$ so that every $|S_i| \geq \alpha n$ and $\ell_i$ correctly computes the labels in $S_i$. Our sample $\cS$ may not admit such a soluble partition. 
+% Nevertheless, samples that do, correspond to the well-studied setting of \emph{mixed linear regression}. In this setting, our list is small ($k\leq 1/\alpha$). But it is easy to construct samples $\cS$ that admit soluble partitions where every $\ell_i$ is far from $\ell^*$.    
+
+\paragraph{Anti-Concentration is necessary} It turns out that our failure above was inevitable. It is provably \emph{necessary} (Proposition~\ref{prop:anti-concentration-is-necessary}) for the inliers\footnote{As in the standard robust estimation setting, the outliers are  arbitrary and potentially adversarially chosen.} to satisfy a certain \emph{anti-concentration} property for list-decodable estimation to even be information theoretically possible:\Pnote{move to intro/results?}
+
+\begin{definition}[Anti-Concentration]
+A $\R^d$-valued random variable $Y$ with mean $0$ is $\delta$-anti-concentrated if for all non-zero $v$, $\Pr[ \iprod{Y,v} = 0 ] < \delta$. A set $T \subseteq \R^d$ is $\delta$-anti-concentrated if the uniform distribution on $T$ is $\delta$-anti-concentrated.
+\end{definition}
+
+
+ 
+% % Our technique relies on side-stepping the issues in algorithm design by focusing just on giving a proof of \emph{identifiability}. 
+% % Operationally, this means that we use a (large-enough) input sample to give a procedure that can \emph{verify} purported solutions.
+
+
+
+% % \emph{ Given a list $L$ of linear functions, how can we ascertain that there is an $\ell \in L$ close to $\ell^*$?} 
+
+
+% By applying this test to all possible lists of constant size, we can obtain a good solution establishing identifiability. 
+
+% Perhaps the first idea here is to $\ell \in L$, there be a $S_{\ell} \subseteq \cS$ of size $\alpha n$ such that $\ell$ correctly computed the labels of all examples in $S_{\ell}$. The $S_{\ell}$s clearly serve as a ``certificate'' that every linear function $\ell \in L$ indeed satisfies some $\alpha$ fraction of the equations in $\cS$. 
+
+
+
+
+
+% A natural approach is to look at $\Sol$, the set of \emph{all} pairs $(S,\ell)$ such that $S \subseteq [n]$ of size $|S| = \alpha n$ and $\iprod{x_i,\ell} = y_i$ for every $i \in S$.  
+% We can simply hope to return the list $L$ of $\ell$s that appear in $\Sol$. 
+% Since $(\cI,\ell^*)$ is contained in $\Sol$, $\ell^* \in L$. 
+% However, it's not hard to show (see Lemma~\ref{}) this list $L$ can be $\exp(\Omega(n))$ in size - far from the absolute constant size we are shooting for.
+
+% Indeed, any solution to list-decodable regression must (at least implicitly) establish $\Sol$ can be pruned down to an absolute constant size without affecting $(\cI,\ell^*)$.
+% The key idea that is both necessary (see Lemma~\ref{}) and sufficient to establish the \emph{existence} of a small list-decoding of the sample is the anti-concentration property of $\cI$.
+% In Lemma~\ref{}, we show that anti-concentration of $\cI$ is also information-theoretically \emph{necessary} for list-decodable regression). 
+
+It turns out that anti-concentration is also \emph{sufficient} for list-decodable estimation. Intuitively, this is because anti-concentration of the inliers prevents the existence of a soluble set that intersects significantly with $\cI$ and yet can be labeled correctly by $\ell \neq \ell^*$. Let's start with the simple proof in the special case when $\cS$ admits a soluble partition. %Thus, our second idea above immediately gives us an inefficient algorithm for list-decodable regression whenever $\cS$ admits a soluble partition. 
+
+
+
+\begin{proposition}
+Suppose $\cI$ is $\alpha$-anti-concentrated. Suppose there exists a partition $S_1, S_2,\ldots, S_k \subseteq \cS$ such that each $|S_i| \geq \alpha n$ and there exist $\ell_1, \ell_2, \ldots, \ell_k$ such that $y_j = \iprod{\ell_i, x_j}$ for every $j \in S_i$. Then, there is an $i$ such that $\ell_i = \ell^*$. \label{prop:simple-uniqueness-partition}
+\end{proposition}
+
+\begin{proof}
+Since $k \leq 1/\alpha$, there is a $j$ such that $|\cI \cap S_j| \geq \alpha |\cI|$. 
+Then, $\iprod{x_i, \ell_j}= \iprod{x_i, \ell^*}$ for every $i \in \cI \cap S_j$. 
+Thus, $\Pr_{i \sim \cI}[\iprod{x_i,\ell_j-\ell^*} = 0]\geq \alpha$. Anti-concentration of $\cI$ implies that $\ell_j - \ell^* = 0$.
+\end{proof}
+
+%Observe that \emph{any} soluble partition for $L$ allows us to conclude that $\ell* \in L$. 
+The above proposition allows us to use \emph{any} soluble partition as a \emph{certificate} of correctness for the associated list $L$. Two aspects of this certificate were crucial in the above argument: 1) \emph{largeness}: each $S_i$ is of size $\alpha n$ - so the generated list is small, and, 2) \emph{uniformity}: every sample is used in exactly one of the sets. Thus, $\cI$ must intersect one of the $S_i$s in at least $\alpha$-fraction of the points. 
+
+\paragraph{Anti-Concentration is sufficient} For arbitrary $\cS$, we will generalize soluble partitions to obtain certificates that  guarantee largeness and a relaxation of uniformity (formalized below). For this purpose, it is convenient to view such certificates as distributions $\mu$ on $\geq \alpha n$ size soluble subsets of $\cS$. Thus, any collection $\cC\subseteq 2^{\cS}$ of $\alpha n$ size sets corresponds to the uniform distribution $\mu$ on  $\cC$. 
+
+Let $W_i(\mu) = \E_{S \sim \mu} [ \1(i \in S)]$ be the (normalized) frequency of $i$th sample in $\mu$. 
+Intuitively, uniformity means that $W_i(\mu)$s are close to each other. We thus use $\sum_i W_i(\mu)^2$ as a measure of \emph{distance to uniformity}. This is simply the variance of the frequencies up to a shift. The uniform distribution on any soluble $k$-partition of $\cS$ has maximum possible uniformity ($\forall i$, $W_i = \frac{1}{k}$) when it exists.  
+%However, since we require $\cD$ to be supported on soluble sets, such a partition may not exist and there may be a non-trivial choice of a maximally fair distribution. 
+
+% We can now precisely define maximally fair distribution $\cD$: we say that a distribution $\cD$ over $\alpha n$ size \emph{soluble} subsets of $\cS$ is \emph{maximally} fair if for every for every distribution $\cD'$ on $\alpha n$-size soluble sets, $\sum_i W_i(\cD)^2 \leq \sum_i W_i(\cD')^2$. Observe that if $\cS$ admits a soluble partition into $\alpha n$ size sets, then, the uniform distribution on the sets in the partition is always maximally fair. 
+
+% It turns out that if we replace a soluble partition by a maximal distribution $\cD$ over soluble sets of size $\alpha n$, our argument from before goes through as is. 
+ 
+The following claim generalizes the use of uniformity in Proposition~\ref{prop:simple-uniqueness-partition} by replacing soluble partitions with a maximally uniform distribution supported on soluble sets.
+
+\begin{proposition} \label{prop:fair-weight}
+For a maximally uniform $\mu$ on $\alpha n$ size soluble subsets of $\cS$, $\sum_{i \in \cI} \E_{S \sim \mu} [\1 \Paren{i \in S}] \geq \alpha |\cI|$. 
+\end{proposition}
+The proof proceeds by contradiction (see Lemma~\ref{lem:large-weight-on-inliers}). We show that if $\sum_{i \in \cI} W_i(\mu) \leq \alpha |\cI|$, then one can obtain a strictly more uniform distribution by taking a mixture of $\cD$ with the distribution that places all its probability mass on $\cI$. This allow us to obtain an (inefficient) algorithm for list-decodable regression establishing identifiability. 
+\begin{proposition}[Identifiability for List-Decodable Regression] \label{prop:identifiability}
+Let $\cS$ be sample from $\Lin(\alpha, n,\ell^*)$ such that $\cI$ is $\frac{\alpha}{2}$-anti-concentrated. Then, there's an (inefficient) algorithm that finds a list $L$ of size $20/\alpha$ such that $\ell^* \in L$ with probability at least $0.99$.
+\end{proposition}
+\begin{proof}
+Let $\mu$ be \emph{any} maximally uniform distribution over $\alpha n$ size soluble subsets of $\cS$. 
+For $k = 10/\alpha$, let $S_1, S_2, \ldots, S_k$ be independent samples from $\mu$.
+Output the list $L$ of $k$ linear functions that correctly compute the labels in each $S_i$.
+
+To see why $\ell^* \in L$, observe that $\E |S_j \cap \cI|= \sum_{i \in \cI} \E \1(i \in S_j) \geq \alpha |\cI|$. 
+By averaging, $\Pr [|S_j \cap \cI| < \frac{\alpha}{2} |\cI|] \geq \alpha/2$. Thus, there's  a $j \leq k$ so that $|S_j \cap \cI| \geq \frac{\alpha}{2} |\cI|$ with probability at least $1-(1-\alpha/2)^{20/\alpha} \geq 0.99$. We can now repeat the argument in the proof of Proposition~\ref{prop:simple-uniqueness-partition} to conclude that any linear function that correctly labels $S_j$ must equal $\ell^*$.
+\end{proof}
+
+
+\paragraph{An efficient algorithm}
+Our identifiability proof suggests the following simple algorithm: 1) find \emph{any} maximally uniform distribution $\mu$ on soluble subsets of size $\alpha n$ of $\cS$, 2) take $O(1/\alpha)$ samples $S_i$ from $\cD$ and 3) return the list of linear functions that correctly label the equations in $S_i$s. This is inefficient because searching over distributions is NP-hard in general. 
+
+To make this into an efficient algorithm, we start by observing that soluble subsets $S \subseteq \cS$ of size $\alpha n$ can be described by the following set of quadratic equations where $w$ stands for the indicator of $S$ and $\ell$, the linear function that correctly labels the examples in $S$. 
+
+\begin{equation} \label{eq:quadratic-formulation}
+  \cA_{w,\ell}\colon
+  \left \{
+    \begin{aligned}
+      &&
+      \textstyle\sum_{i=1}^n w_i
+      &= \alpha n\\
+      &\forall i\in [n].
+      & w_i^2
+      & =w_i \\
+      &\forall i\in [n].
+      & w_i \cdot (y_i - \iprod{x_i,\ell})
+      & = 0\\
+      &
+      &\|\ell\|^2 \leq 1\\
+    \end{aligned}
+  \right \}
+\end{equation} 
+
+Our efficient algorithm searches for a maximally uniform \emph{pseudo-distribution} on $w$ satisfying \eqref{eq:quadratic-formulation}. Degree $k$ pseudo-distributions (see Section~\ref{sec:preliminaries} for precise definitions) are relaxations of distributions that nevertheless ``behave'' just as distributions whenever we take (pseudo)-expectations (denoted by $\pE$) of a class of degree $k$ polynomials. And unlike distributions, degree $k$ pseudo-distributions satisfying\footnote{See Fact~\ref{fact:eff-pseudo-distribution} for a precise statement.} polynomial constraints (such as \eqref{eq:quadratic-formulation}) can be computed in time $n^{O(k)}$. 
+
+It is helpful to think of pseudo-distributions $\tmu$ as simply distributions where we only get access to moments of degree $\leq k$. This allows us to compute expectations of all degree $\leq k$ polynomials. Since $W_i(\cD) = \pE_{\tmu} w_i$ are just first moments of $\tmu$, our notion of maximally uniform distributions extends naturally to pseudo-distributions. This allows us to prove an analog of Proposition~\ref{prop:fair-weight} for pseudo-distributions and gives us an efficient replacement for Step 1.
+
+\begin{proposition}
+For any maximally uniform $\tmu$ of degree $\geq 2$,  $\sum_{i \in \cI} \pE_{\tmu}[w_i]  \geq \alpha |\cI| = \alpha \sum_{i\in [n]} \pE_{\tmu}[w_i]$\mper\label{prop:good-weight-on-inliers}
+\end{proposition} 
+
+For Step 2, however, we hit a wall: it's not possible to obtain independent samples from $\tmu$ given only low-degree moments. Our algorithm relies on an alternative strategy instead. 
+
+Consider the vector $v_i = \frac{\pE_{\tmu}[w_i \ell]}{\pE_{\tmu}[w_i]}$ whenever $\pE_{\tmu}[w_i] \neq 0$ (set $v_i$ to zero, otherwise).  This is simply the (scaled) average of all the linear functions $\ell$ that are used to label the sets of size $\alpha n$ in the support of $\tmu$ that include $i$th sample. Further, $v_i$ depends only on the first two moments of $\tmu$.
+
+We think of $v_i$s as ``guesses'' made by the $i$th sample for the unknown linear function. 
+Let us focus our attention on the guesses $v_i$ of $i \in \cI$ - the inliers.
+We will show that inliers' guesses are close (within some $\eta$) to $\ell^*$ on an average:
+
+
+\begin{equation}
+\frac{1}{\sum_{i \in \cI} \pE[w_i]} \sum_{i \in \cI} \pE[w_i] \| v_i - \ell^*\|^2  < \eta \mper \label{eq:inliers-guess-well}
+\end{equation}
+
+Before diving into \eqref{eq:inliers-guess-well}, let's see how it gives us our efficient list-decodable regression algorithm:
+
+\begin{enumerate}
+	\item Find a pseudo-distribution $\tmu$ satisfying \eqref{eq:quadratic-formulation} that minimizes $\sum_i \pE_{\tmu}[w_i]^2$.
+	\item For $O(\frac{1}{\alpha})$ times, independently choose a random index $i \in [n]$ with probability proportional to $\pE_{\tmu}[w_i]$ and return the list of corresponding $v_i$s. 
+\end{enumerate} 
+
+Step 1 above is a convex program and can be solved in polynomial time. Let's analyze step 2 to see why the algorithm works. Using \eqref{eq:inliers-guess-well} and Markov's inequality, conditioned on $i \in \cI$, $\|v_i - \ell^*\|_2^2 \leq 2 \eta$ with probability $\geq 1/2$. By Proposition~\ref{prop:good-weight-on-inliers}, $\frac{\sum_{i \in \cI} \pE[w_i]}{\sum_{i \in [n] \pE[w_i]}} \geq \alpha$ so $i \in \cI$ with probability at least $\alpha$. Thus in each iteration of step 2, with probability at least $\alpha/2$, we choose an $i$ such that $v_i$ is $2\eta$-close to $\ell^*$. Repeating $O(1/\alpha)$ times gives us the $0.99$ chance of success.
+
+\paragraph{\eqref{eq:inliers-guess-well} via anti-concentration} Let's now get to \eqref{eq:inliers-guess-well}. 
+As in the information-theoretic argument, \eqref{eq:inliers-guess-well} relies on the anti-concentration of $\cI$.
+Let's first see a quick proof for the case of distributions $\cD$.
+
+\begin{proof}[Proof of \eqref{eq:inliers-guess-well} for actual distributions $\tmu$]
+First, by Cauchy-Schwarz inequality, $\sum_i \|\pE[w_i \ell] - \pE[w_i] \ell^*\|^2 \leq \pE_{(w,\ell) \sim \tmu} [\sum_{i \in \cI} w_i \|\ell - \ell^*\|^2]$. 
+Next, let $S_w$ be the set indicated by $w$. 
+Then, as in Proposition~\ref{prop:simple-uniqueness-partition}, if $\cI$ is $\eta$-anti-concentrated, and $|\cI \cap S_w| \geq \eta |\cI|$, then $\ell-\ell^*= 0$. Using $\|\ell-\ell^*\|^2 \leq 2$, \\$\pE [\sum_{i \in \cI} w_i \|\ell - \ell^*\|^2] = \pE [\1\Paren{|S_w \cap \cI|< \eta |\cI|}w_i \|\ell - \ell^*\|^2] = \pE [\sum_{i \in S_w \cap \cI} \|\ell - \ell^*\|^2]  \leq 2\eta |\cI|$.
+\end{proof}
+
+
+
+% To gain intuition about the distributions $\tmu$ for which such a statement might be true - let us imagine two extreme situations. First, assume that $\tmu$ is such that for every $(w,\ell)$ in the support, whenever $w_i = 1$ for some $i \in \cI$, then, $w$ is in fact the indicator of $\cI$. That is, if the subset indicated by $w$ manages to include even a single point from $\cI$, then it in fact indicates the subset $\cI$ itself. In this case, observe that $v_i = \ell^*$(!). 
+
+% To understand a different extreme - let us think of the $\tmu$ that is uniform over $(w,\ell)$ where $w$ is a uniformly random subset of $\alpha n$ of the $n$ samples and $\ell$ is a random linear function \footnote{The reader might be alarmed that such a linear function can never get the labels right. That is indeed what we want to show - that any distribution that satisfies the constraints of our program must be far from this construction.} correctly. In this case, it is easy to see that $v_i$ can be arbitrarily far from $\ell^*$. 
+
+% In order for our guesses $v_i$ for $i \in \cI$ to be close to $\ell^*$, we must thus show that our distribution always ``looks like'' the first case rather than the second. We can phrase this more concretely by asking that whenever $(w,\ell)$ lies in the support of any distribution $\tmu$ that satisfies our constraints, then $\tmu$ must satisfy the following property: if $\|\ell -\ell^*\|_2 > \eta$, then, $w$ must only intersect $\cI$ in a small fraction of the points. 
+
+% \paragraph{\eqref{eq:inliers-guess-well} from Littlewood-Offord Type Anti-Concentration} It turns out that the above statement is essentially a rephrasing of the distribution $D$ of the linear equations in $\cI$ satisfying a \emph{anti-concentration} inequality. To see why, consider a subset $A$ of size $\alpha n$ such that $C = |A \cap \cI|$ is non-empty. Suppose further that there's a linear function $\ell' \neq \ell^*$ that correctly labels samples in $A$. Then, $\ell- \ell^*$ is a non-zero vector that evaluates to $0$ on all of $C$. We would like to show that if $\ell$ is far from $\ell^*$ then $C$ cannot be large. More specifically, let $v = \ell - \ell^*$ and consider the points in $C$. Then, $C$ is a subset of a uniform sample from $D$ and $\iprod{x, v} = 0$ for all points in $C$. If the sample size $\alpha n$ is large enough, then, this must mean that $\Pr_{x \sim D} [\iprod{x,v} = 0 ]\geq \frac{|C|}{\alpha n}$. 
+
+% Littlewood-Offord type inequalities show a tight (up to constants) bound on such probabilities. The simplest example is that of the standard gaussian distribution $\cN(0,I)$ where we have: $\Pr_{x \sim \cN(0,I)} [|\iprod{x,v}| < \delta]\leq O(\delta)$. Such a statement extends (via more non-trivial arguments) to other distributions such as the uniform distribution~\cite{ErdosLittlewoodOfford} on the hypercube $\on^n$. 
+
+% Thus, if we could show that no non-zero vector evaluates to zero on a large enough fraction of points, we will immediately obtain any $A$ as above must be approximately disjoint from $\cI$. It turns out that this is indeed true in a robust way whenever the example points in the inliers are chosen from a distribution $D$ on $\R^d$ such that for any direction $v$, the random variable $\iprod{x,v}$ is sufficiently \emph{anti-concentrated} (so that the probability $\iprod{x,v} <\delta$ is small. 
+
+ % Weaker quantitative versions of such a statement follow from variants of the classical Littlewood-Offord  anti-concentration inequalities that effectively say that for ``nice enough'' probability distributions $D$ on $\R^d$, and for any unit vector $v$, $\Pr[ |\iprod{ x, v}| < \delta \sqrt{\E \iprod{x,v}^2}] \leq O(\delta)$. 
+ % Thus, it appears that at least for actual distributions $\tmu$, we can ensure \eqref{eq:good-weight-on-inliers} whenever $D$ satisfies an anti-concentration inequality.
+
+\paragraph{SoSizing Anti-Concentration} The key to proving \eqref{eq:inliers-guess-well} for pseudo-distributions, is a \emph{sum-of-squares}(SoS) proof of anti-concentration. Sum-of-squares (see Section~\ref{sec:preliminaries}) is a restricted system for proving polynomial inequalities subject to polynomial inequality constraints. Thus, to even ask for a SoS proof of anti-concentration inequality, we must phrase it as a polynomial inequality. 
+
+To do this, we use a low-degree polynomial approximator $p(v)$ for the function $f_x(v) = \1\Paren{ \iprod{x,v} =0}$. Since  polynomials grow unboundedly for large enough inputs, we need uniform distribution on $\cI$ to have sufficiently light-tails to ensure that $\E_{x \sim \cI} p(\iprod{x,v})^2$ is small. In Lemma~\ref{lem:univppty_box}, we show that anti-concentration and light-tails are enough to construct such a polynomial. 
+
+Finally, we must show a \emph{certified} anti-concentration inequality by giving a low-degree SoS proof of $\E_{x \sim \cI} p(\iprod{x,v})^2 \leq \eta$. We use standard tools to show such statements for broad families of inlier distributions in Section~\ref{sec:certified-anti-concentration}.
+
+\Pnote{Add a brief discussion contrasting our approach with the usual proofs to algorithms framework esp. for robust estimation.}
+
+% We show certified concentration inequalities for the gaussian distribution and extend it to some other standard distributions under additional restrictions. 
+
+% hus, in addition to anti-concentration, we assume that the distribution $D$ has subgaussian tails in all directions\footnote{For  the standard gaussian distribution, one can show the related claim that for any $\beta$ and $y_1, y_2, \ldots, y_n$ and for a large enough $n$ chosen independently from such a distribution, any subset $S \subseteq [n]$ of size $\beta n$ satisfies $\frac{1}{|S|} \sum_{i \in S} \langle y_i, v \rangle^2 \geq \Omega(\beta \sqrt{\log(1/\beta)})$. A (certified) version of such a statement follows from our (certified) anti-concentration inequality. We omit the details in this version.}.
+
+% Currently, we only know how to prove our certified anti-concentration inequality in all generality for all anti-concentrated (potentially non-product) gaussian measures on $\R^d$. If we restrict the set of direction $v$ to all vectors with coordinates in $\{0,1,-1\}$, then, we can prove a certified anti-concentration inequality for all anti-concentrated distributions on $\R^d$ that are, in addition, 1) product, 2) identically distributed in each coordinate and 3) have subgaussian tails. This allow us to solve random noisy linear equations on all distributions that satisfy the three conditions above under the additional promise that the unknown linear function has coordinates in $\{\frac{-1}{\sqrt{d}},\frac{1}{\sqrt{d}}\}$ (or tiny enough perturbations thereof).
+
+% \paragraph{\eqref{eq:good-weight-on-inliers} from a Max-Entropy Constraint} Since we do not know the inliers, we cannot add this condition as a constraint. Instead, to force the algorithm to return a $\tmu$ with this property, we add a ``maximum entropy'' constraint instead. We describe the details of this below.The key observation that allows us to ensure \eqref{eq:good-weight-on-inliers} is that while an arbitrary $\tmu$ that satisfies our constraints need not ensure this property, a \emph{maximum entropy} $\tmu$ must! This is because for any (pseudo)-distribution that does not place enough ``weight'' on the inliers $\cI$, ``spreading'' some of the probability mass on to the inliers increases the entropy of the distribution. 
+
+
+% % Intuitively speaking, if there are multiple subsets of the sample of size $\alpha n$ that are correctly labeled by a linear function, then we expect the maximum entropy (pseudo)-distribution to return the uniform distribution on all such subsets. Such a (pseudo)-distribution, thus, must have a non-zero probability mass on the inliers.
+
+% Since the only meaningful information we have about pseudo-distributions are their low-degree moments, we must use a notion of ``entropy'' that is expressible in terms of just the low-degree moments of the pseudo-distribution. Our choice is extremely simple and uses just the first moment: we simply minimize the $\ell_2$ norm of $\pE[w]$. Note that this is a convex minimization problem and thus efficiently (approximately) soluble using the ellipsoid algorithm. 
+
+
+%As one might guess, we will, in fact, need a robust version of such a statement that in fact shows that the maximum entropy pseudo-distributoin must place a significant ``weight'' on the true inliers. This is indeed true as we show when we analyze our algorithm. 
+
+\section{Algorithm for List-Decodable Robust Regression}
+In this section, we describe and analyze our algorithm for list-decodable regression and prove our first main result. 
+\restatetheorem{thm:main}
+% In this section, we establish the information-theoretic feasibility of list-decodable robust regression by showing an \emph{inefficient} algorithm for the problem.  We will show that whenever the distribution $D$ satisfies an anti-concentration inequality, with high probability over the draw of a large enough polynomial size sample from $\Lin_D(\alpha,n,\ell^*)$, we can identify a list $L$ of $O(\frac{1}{\alpha})$ linear functions such that there exists an $\ell' \in L$ satisfying $\|\ell'-\ell^*\|_2 <\eta$. 
+
+% Let $\{(x_i,y_i)\}_{i = 1}^n$ be the input sample. 
+% A natural approach is to look at $\Sol$, the set of \emph{all} pairs $(S,\ell)$ such that $S \subseteq [n]$ of size $|S| = \alpha n$ and $\iprod{x_i,\ell} = y_i$ for every $i \in S$.  
+% We can simply hope to return the list $L$ of $\ell$s that appear in $\Sol$. 
+% Since $(\cI,\ell^*)$ is contained in $\Sol$, $\ell^* \in L$. 
+% However, it's not hard to show (see Lemma~\ref{}) this list $L$ can be $\exp(\Omega(n))$ in size - far from the absolute constant size we are shooting for.
+
+% % Indeed, any solution to list-decodable regression must (at least implicitly) establish $\Sol$ can be pruned down to an absolute constant size without affecting $(\cI,\ell^*)$.
+% The key idea that is both necessary (see Lemma~\ref{}) and sufficient to establish the \emph{existence} of a small list-decoding of the sample is the anti-concentration property of $\cI$.
+% % In Lemma~\ref{}, we show that anti-concentration of $\cI$ is also information-theoretically \emph{necessary} for list-decodable regression). 
+
+% \begin{definition}[Anti-Concentration]
+% A $\R^d$-valued, zero-mean random variable $Y$ is $C$-anti-concentrated if for all $v$ and $\delta$, $\Pr[ |\iprod{Y,v}| \leq \delta \sqrt{\E [\iprod{Y,v}^2}] \leq C\delta$.
+% \end{definition}
+
+% Let us characterize how anti-concentration of $\cI$ helps us prune the list $\Sol$:
+% \begin{proposition}
+% Suppose $\cI$ is $O(1)$-anti-concentrated and $\delta > 0$. Then, whenever $(S,\ell) \in \Sol$ such that $|S \cap \cI| > \delta |\cI|$, $\ell = \ell'$. 
+% \end{proposition}
+
+% \begin{proof}
+% Let $v = \ell - \ell'$. Then, for any $i \in S \cap \cI$, $\iprod{x_i,v} = 0$. Thus, $\Pr_{i \sim \cI} \iprod{x_i,v} = 0 \geq \delta$. If $v \neq 0$, this contradicts the anti-concentration of $\cI$. 
+% \end{proof}
+
+
+
+
+% \begin{theorem}[Robust Identifiability of List-Decoding Regression]
+% Let $\{(x_i,y_i)\}_{i = 1}^n$ be a sample from $\Lin_D(\alpha,n,\ell^*)$. Let 
+% \end{theorem}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+% In the next section, we will obtain an efficient algorithm with the same guarantees by ``SoSizing'' the proof here.
+
+Our input is a sample $\cS = \{(x_i,y_i)\}_{i \leq n} \subseteq \R^d \times \R$. 
+We construct the following set of quadratic equations in variables $(w,\ell) \in \R^n\times \R^d$. 
+Here, $w$ ``stands'' indicator of the subset of inliers and $\ell$, the linear function that correctly labels them. 
+
+\begin{equation}
+  \cA_{w,\ell}\colon
+  \left \{
+    \begin{aligned}
+      &&
+      \textstyle\sum_{i=1}^n w_i
+      &= \alpha n\\
+      &\forall i\in [n].
+      & w_i^2
+      & =w_i \\
+      &\forall i\in [n].
+      & w_i \cdot (y_i - \iprod{x_i,\ell})
+      & = 0\\
+      &
+      &\sum_{i \leq d} \ell_i^2 \leq 1\\
+    \end{aligned}
+  \right \}
+\end{equation} 
+
+
+
+\begin{mdframed}
+  \begin{algorithms}[List-Decodable Regression]
+    \label[algorithm]{alg:noisy-regression-gaussian}\mbox{}
+    \begin{description}
+    \item[Given:]
+    Sample $\cS$ of size $n$ drawn according to $\Lin(\alpha,n,\ell^*)$ with inliers $\cI$, $\eta > 0$. 
+    \item[Output:]
+    	A list $L \subseteq \R^d$ of size $O(1/\alpha)$ such that there exists a $\ell \in L$ satisfying $\|\ell -\ell^*\|_2 < \eta$.
+    \item[Operation:]\mbox{}
+    \begin{enumerate}
+		\item Find a degree $O(1/\alpha^2\eta^2)$ pseudo-distribution $\tilde{\mu}$ satisfying $\cA_{w,\ell}$ that minimizes $\|\pE[w]\|_2$.
+		\item For each $i \in [n]$ such that $\pE_{\tmu}[w_i] > 0$, let $v_i = \frac{\pE_{\tmu}[w_i \ell]}{\pE_{\tmu}[w_i]}$. Otherwise, set $v_i =0$.
+		\item 
+		Take $J$ be a random multiset formed by union of $O(1/\alpha)$ independent draws of $i \in [n]$ with probability $\frac{\pE[w_i]}{\alpha n}$.
+		\item Output $L = \{v_i \mid i \in J\}$ where $J \subseteq [n]$.
+	\end{enumerate}
+    \end{description}    
+  \end{algorithms}
+\end{mdframed}
+
+
+\subsection{Analysis}
+
+Our analysis needs the sample to satisfy a certain anti-concentration property. 
+As we show in the next section, this property holds for a large enough sample from $\Lin(\alpha,n,\ell^*)$. %To describe this property we need a polynomial approximating $\1(|x| <\delta)$. 
+
+% \begin{definition}[Core Indicator Polynomial]
+% A univariate polynomial $p$ on $\R$ is said to be a $(\delta,\epsilon)$-core indicator for a distribution $D$ on $\R$ if for every $x \in [-\delta,\delta]$, $p(x) \geq 1$ and $\E_D p^2 < \epsilon$. 
+% \end{definition}
+
+% We show in the appendix that such a polynomial exists for $N(0,1)$. This implies that for $x \sim N(0, \Sigma)$ with $\cond(\Sigma) < O(1)$ such a polynomial exists for $\langle x, v\rangle$ for any unit vector $v$.We state this lemma below and prove it in a subsequent section. 
+
+% \fixme{Currently, the polynomial seems to come from nowhere - so it's a bit dissatisfying. It might be good to either shift to the other anti-concentration statement or motivate the polynomial as an approximation to the indicator $\1(|x| <\delta)$ as in the overview.}
+
+% \begin{lemma} \label{lem:polynomial-fact}
+% Fix any $t \in \N$ and let $n \geq d^{t/2} \poly \log{(d)}$. 
+% Then, for some absolute constant $C' > 0$, there's a square, core indicator polynomial $p^2$ of degree $t$ satisfying $p^2(0) = 1$ such that with probability at least $1-1/d^2$ over the draw of the inliers in $\Lin_D(\alpha,n,\ell^*)$ whenever $D = \cN(0,\Sigma)$ for $\cond(\Sigma) \leq O(1)$:
+% \[
+% \Set{\|v\|_2^2 \leq 2} \sststile{t}{v} \Set{\frac{1}{|\cI|} \sum_{i \in \cI} \|v\|_2^2 p^2(\langle x_i, v \rangle) \leq \frac{C'}{\sqrt{t}} }\mper
+% \]
+
+% \end{lemma}
+
+% This is a condition that strongly relies on anti-concentration property for univariate gaussian random variable. 
+% This motivates the definition of a \emph{certifiably} anti-concentrated sample. 
+% \begin{definition}[Certifiable Anti-Concentration]
+% Let $p$ be the polynomial from Lemma~\ref{lem:polynomial-fact}. 
+% A sample $\cS$ from $\Lin_D(\alpha,n,\ell^*)$ is said to be \emph{certifiably} anti-concentrated if it satisfies
+% \[
+% \Set{\|v\|_2^2 \leq 2} \sststile{t}{v} \frac{1}{|\cI|} \sum_{i \in \cI} \|v\|_2^2 p^2(\langle x_i, v \rangle) \leq \frac{C'}{\sqrt{t}} \mper
+% \]
+% \end{definition}
+
+
+
+The following two lemmas form the bulk of our analysis. 
+
+\begin{lemma}
+There is an absolute constant $C> 0$ such that for any $t \geq 4$ and any certifiably anti-concentrated sample $\cS$,
+\[
+\cA_{w,\ell} \sststile{t}{w,\ell} \Set{\frac{1}{|\cI|}\sum_{i \in \cI}^n w_i \|\ell - \ell^*\|^2_2\leq \frac{C}{\sqrt{t}}}
+\]
+\label{lem:close-on-inliers}
+\end{lemma}
+
+\begin{proof}
+We start by observing:
+\[
+\cA_{w,\ell} \sststile{2}{\ell} \|\ell - \ell^*\|_2^2 \leq 2 \mper
+\]
+
+Next, we have that for any $i \in [n]$,
+
+\begin{align*}
+\cA_{w,\ell} &\sststile{t+2}{w,\ell} \Set{ 1-p^2 (w_i \langle x_i, \ell - \ell^* \rangle) = 0}\\
+&\sststile{t+2}{w,\ell} \Set{1- w_i p^2 (\langle x_i, \ell - \ell^* \rangle) = 0}\\
+\end{align*}
+
+Using Lemma~\ref{lem:polynomial-fact}, we thus have:
+\begin{align*}
+\cA_{w,\ell}  &\sststile{t+2}{w,\ell} \Bigl\{ \frac{1}{|\cI|} \sum_{i \in \cI} w_i \|\ell-\ell^*\|_2^2 \\
+&= \frac{1}{|\cI|} \sum_{i \in \cI} w_i \|\ell-\ell^*\|_2^2 w_i p^2 (\langle x_i, \ell-\ell^* \rangle) = 0\\
+&= \frac{1}{|\cI|} \sum_{i \in \cI} w_i \|\ell-\ell^*\|_2^2 p^2 (\langle x_i, \ell-\ell^*\rangle) = 0\\
+&\leq \frac{1}{|\cI|} \sum_{i \in \cI} \|\ell-\ell^*\|_2^2 p^2 (\langle x_i, \ell-\ell^* \rangle) = 0\\
+&\leq \frac{C}{\sqrt{t}}\mper
+\Bigr\}
+\end{align*}
+
+\end{proof}
+
+
+Next, we show that our surrogate to the maximum entropy constraint on the pseudo-distribution ensures that the true inliers get sufficiently large ``weight'' in the pseudo-distribution. 
+
+\begin{lemma}
+Let $\tilde{\mu}$ be a pseudo-distribution of degree $\geq 4$ satisfying $\cA_{w,\ell}$ that minimizes $\|\pE[w]\|_2$. 
+
+
+
+Then, 
+\[
+\sum_{i \in \cI} \pE_{\tilde{\mu}}[w_i] \geq \alpha^2 n \mper
+\] \label{lem:large-weight-on-inliers}
+\end{lemma}
+
+\begin{proof}
+Let $u = \frac{1}{\alpha n}\pE[w]$. Then, $u$ is a non-negative vector satisfying $\sum_{i \sim [n]} u_i = 1$.
+
+% Let $u_i = \frac{1}{\alpha m} \cdot \pE[w_i]$ so that $\sum_{i=1}^m \pE[u_i] = 1 $. 
+
+Let $\wt(\cI) = \sum_{i \in \cI} u_i$ and $\wt(\cO) = \sum_{i \not \in \cI} u_i$. Then, $\wt(\cI) + \wt(\cO) = 1$.
+
+We will show that if $\wt(\cI) < \alpha$, then there's a pseudo-distribution $\tmu'$ that satisfies $\cA_{w,\ell}$ and has a lower value of $\|\pE[w]\|_2$. This is enough to complete the proof. 
+
+To show this, we will ``mix'' $\tmu$ with a pseudo-distribution we know exists. Consider the pseudo-distribution $\tmu^*$ that is supported on a single $w$ - the indicator $\1_{\cI}$. That is, $w_i = 1$ iff $i \in \cI$ and $0$ otherwise. $\tmu^*$ satisfies $\cA_{w,\ell}$. Thus, any convex combination (mixture) of $\tmu$ and $\tmu^*$ also satisfies $\cA_{w,\ell}$. 
+
+We will show that whenever $\wt(\cI) < \alpha$, there exists a $\lambda > 0 $ such that $\tmu_{\lambda} = (1-\lambda) \tmu + \lambda \tmu^*$ satisfies $\|\pE_{\tmu_{\lambda}}[w]\|_2 < \|\pE[w]\|_2$.  
+
+
+
+
+% Let \[ \mu_C = \sum_{i \in C} u_i \text{ and  } 1-\mu_C = \sum_{i \in [m]\setminus C} u_i. \] 
+We first lower bound $\|u\|_2^2$ in terms of $\wt(\cI)$ and $\wt(\cO)$. Observe that for any fixed values of $\wt(\cI)$ and $\wt(\cO)$, the minimum is attained by the vector $u$ that ensures $u_i = \frac{1}{\alpha n} \wt(\cI)$ for each $i \in \cI$ and $u_i = \frac{1}{(1-\alpha)n} \wt(\cO)$. 
+
+This yields that:
+
+ % The minimum value of $\|u\|^2$ will be attained when the mass of $u_i$ is spread uniformly over $C$ and $\overline{C}$, and at that point
+
+\begin{align*}
+    \|u\|^2 &\geq \left( \frac{\wt(\cI)}{\alpha n} \right)^2 \alpha n + \left(\frac{1-\wt(\cI)}{(1-\alpha) n}\right)^2 (1-\alpha) n 
+    = \frac{1}{\alpha n}\cdot \left( \wt(\cI) + (1-\wt(\cI))^2 \left(\frac{\alpha}{1-\alpha}\right) \right) \\
+\end{align*}
+
+
+
+
+Next, we compute the the $\ell_2$ norm of $u' = \frac{1}{\alpha n} \pE_{\tmu_{\lambda}} w$ as:
+
+\[ \|u'\|_2^2 = (1-\lambda)^2 \|u\|^2 +  \frac{\lambda^2}{\alpha n} + 2 \lambda(1-\lambda)\frac{\wt(\cI)}{\alpha n} \mper\] 
+Thus, 
+\begin{align*}
+    \|u'\|^2 - \|u\|^2  &= (-2\lambda+\lambda^2) \|u\|^2 +  \frac{\lambda^2}{\alpha n} + 2 \lambda(1-\lambda)\frac{\wt(\cI)}{\alpha n}\\
+    &\leq \frac{-2\lambda+\lambda^2}{\alpha n}\cdot \left( \wt(\cI)^2 + (1-\wt(\cI))^2 \frac{\alpha}{1-\alpha} \right) +  \frac{\lambda^2}{\alpha n} + 2 \lambda(1-\lambda)\frac{\wt(\cI)}{\alpha n}
+\end{align*}
+
+Rearranging, we get
+
+\begin{align*} \|u\|^2 - \|u'\|^2 &\geq \frac{\lambda}{\alpha n} \left( (2-\lambda) \cdot \left( \wt(\cI)^2 + (1-\wt(\cI))^2 \left(\frac{\alpha}{1-\alpha}\right) \right) -  \lambda - 2 (1-\lambda)\wt(\cI)\right)\\
+&\geq \frac{\lambda ( 2-\lambda)}{\alpha n} \left( \wt(\cI)^2 + (1-\wt(\cI))^2 \frac{\alpha}{1-\alpha} - \wt(\cI)\right)\\
+\end{align*}
+
+Now, whenever $\wt(\cI) < \alpha$, $\wt(\cI)^2 + (1-\wt(\cI))^2 \frac{\alpha}{1-\alpha} - \wt(\cI)> 0$. Thus, we can choose a small enough $\lambda > 0$ so that $\|u\|^2 - \|u'\|^2 > 0$. % contradicting that $u$ takes minimum norm under the conditions of the problem. Hence $\mu_C > \alpha$ and $Z \geq \alpha m$. 
+
+
+\end{proof}
+
+
+
+As a consequence of this lemma, we can show that a constant fraction of the $v_i$ for $i \in \cI$ constructed in the algorithm are close to $\ell^*$. 
+
+\begin{lemma}
+Let $\tmu$ be a pseudo-distribution of degree $t$ satisfying $\cA_{w,\ell}$. Then, 
+\[
+\frac{1}{|\cI|} \sum_{i \in \cI} \pE[w_i] \cdot \|v_i -\ell^*\|_2^2 \leq \frac{C}{\sqrt{t}} \mper
+\]
+\label{lem:votes-are-close}
+\end{lemma}
+\begin{proof}
+By Lemma~\ref{lem:close-on-inliers}, we have:
+\[
+\cA_{w,\ell} \sststile{t}{w,\ell} \Set{\frac{1}{|\cI|}\sum_{i \in \cI}^n w_i \|\ell - \ell^*\|^2_2\leq \frac{C}{\sqrt{t}}}
+\]
+
+
+We also have: $\cA_{w,\ell} \sststile{2}{w,\ell} \Set{w_i^2 - w_i =0}$ for any $i$. This yields:
+\[
+\cA_{w,\ell} \sststile{t}{w,\ell} \Set{\frac{1}{|\cI|}\sum_{i \in \cI}^n \|w_i\ell - w_i\ell^*\|^2_2\leq \frac{C}{\sqrt{t}}}
+\]
+
+
+
+Since $\tmu$ satisfies $\cA_{w,\ell}$, taking pseudo-expectations yields:
+\[
+ \frac{1}{\cI} \sum_{i \in \cI}\pE \| w_i\ell  - w_i \ell^*\|_2^2 \leq \frac{C}{\sqrt{t}} \mper
+ \]
+
+By Cauchy-Schwarz inequality for pseudo-distributions (Fact~\ref{fact:pseudo-expectation-cauchy-schwarz}, we have:
+\[
+ \frac{1}{\cI} \sum_{i \in \cI} \| \pE[w_i\ell]  - \pE[w_i] \ell^*\|_2^2 \leq \frac{C}{\sqrt{t}} \mper
+ \]
+
+
+Using $v_i = \frac{\pE[w_i \ell]}{\pE[w_i]}$ whenever $\pE[w_i] >0$ and $0$ otherwise, we have:
+\[
+ \frac{1}{\cI} \sum_{i \in \cI, \pE[w_i] > 0} \pE[w_i]\cdot \|v_i -  \ell^*\|_2^2 \leq \frac{C}{\sqrt{t}} \mper
+ \]
+
+
+\end{proof}
+
+
+
+
+
+
+
+
+
+
+Lemma~\ref{lem:large-weight-on-inliers} and Lemma~\ref{lem:votes-are-close} immediately imply the correctness of our algorithm. 
+\begin{proof}[Proof of Main Theorem~\ref{thm:main}]
+
+
+Let $\tmu$ be a pseudo-distribution of degree $t$ satisfying $\cA_{w,\ell}$ and minimizing $\|\pE[w]\|_2 = 1$.
+ Such a pseudo-distribution exists as can be seen by just taking the distribution with a single-point support $w$ where $w_i = 1$ iff $i \in \cI$. 
+
+By Lemma~\ref{lem:polynomial-fact}, for $n \geq d^{t/2} \poly \log{(d)}$, a $n$-size sample from $\Lin(\alpha,n,\ell^*)$ is certifiably anti-concentrated with probability at least $1-1/d^2$. Let us condition on this event in the rest of the analysis. 
+
+
+From Lemma~\ref{lem:votes-are-close}, we have: 
+\[
+\frac{1}{|\cI|} \sum_{i \in \cI} \pE[w_i] \cdot \|v_i -\ell^*\|_2^2 \leq \frac{C}{\sqrt{t}} \mper
+\]
+
+Let $Z = \frac{1}{\alpha n} \sum_{i \in \cI} \pE[w_i]$. Then, by Lemma~\ref{lem:large-weight-on-inliers}, $Z \geq \alpha$.
+
+By a rescaling, we obtain:
+\begin{equation} 
+\frac{1}{|\cI|} \sum_{i \in \cI} \frac{\pE[w_i]}{Z} \cdot \|v_i -\ell^*\|_2^2 \leq \frac{1}{Z} \frac{C}{\sqrt{t}} \mper
+\end{equation}
+Choosing large enough $t = \Theta(\frac{1}{\eta^2 \alpha^2})$, this yields:  
+\begin{equation} 
+\label{eq:good-on-average}
+\frac{1}{|\cI|} \sum_{i \in \cI} \frac{\pE[w_i]}{Z} \cdot \|v_i -\ell^*\|_2^2 \leq \eta/2 \mper
+\end{equation}
+
+Let $i \in [n]$ be chosen with probability $\frac{\pE[w_i]}{\alpha n}$. 
+Then, $i \in \cI$ with probability $Z \geq \alpha$. 
+
+Let us now condition on the event that $i \in \cI$. 
+By Markov's inequality applied to \eqref{eq:good-on-average}, with conditional probability at least $\frac{1}{2}$, $\|v_i - \ell^*\|_2^2 < \eta$. 
+
+Thus, in total, with probability at least $\alpha/2$, $\|v_i - \ell^*\|_2^2 \leq \eta$.
+Thus, the with probability at least $0.99$ over the draw of the random set $J$, the list constructed by the algorithm contains an $\ell$ such that $\|\ell - \ell^*\|_2^2 \leq \eta$.
+
+Let us now account for the running time and sample complexity of the algorithm.
+The sample complexity of the algorithm immediately follows by plugging in our choice of $t$ in Lemma~\ref{lem:polynomial-fact}. 
+A pseudo-distribution satisfying $\cA_{w,\ell}$ can be found in time $n^{O(t)} = d^{O(\frac{1}{\alpha^4 \eta^4})}$. The rounding procedure runs in time at most $O(nd)$. 
+
+
+
+
+\end{proof}
+
+
+
+
+
+
+We now prove Lemma~\ref{lem:polynomial-fact}
+\begin{proof}[Proof of Lemma~\ref{lem:polynomial-fact}]
+ Since $\cond(\Sigma) < O(1)$ there exists a uniform scaling of the data such such that $\|\Sigma\|_2 \leq 1$ and $\cond(\Sigma) < O(1)$. Once we have this scaling, observe that for any $v$, $\langle x_i, v\rangle$ is distributed as  $ c \cdot\|v\|_2 \cdot N(0, 1)$ for some $c \in [1/\cond(\Sigma), 1]$. Let $z_i \sim N(0,1)$ and $\sigma^2 = \|v\|^2$.  It is now  sufficient to show that for any $0 < \sigma^2 < 2$ there is an SoS proof of the existence of an even degree $t$ polynomial $p$ satisfying
+ 
+ \[ \frac{\sigma^2}{n} \sum_{i=1}^n p^2(\sigma z_i) \leq \frac{2C'}{\sqrt{t}} \] 
+for some constant $C'$. Note that this is also a polynomial relationship in $\sigma$ (in fact, $\sigma^2$ as will be shown later).  
+This follows from an application of Lemma~\ref{lem:univppty_box} or \ref{lem:univppty_gauss}, which give us an even polynomial $p'$ such that for any $\sigma' < 1$
+
+\[ \sigma'^2 \E_{z \sim N(0,1)} \left[ p'^2(\sigma' z) \right] \leq \frac{C'}{\sqrt{t}} \] 
+
+Since such a polynomial exists. We also have that for any $c \in [1/\cond(\Sigma), 1]$ and as long as $\sigma^2 < 2$ there exists another polynomial $p$ satisfying 
+\[ \sigma^2 \E_{z \sim N(0,c)} \left[ p^2(\sigma z) \right] \leq \frac{C''}{\sqrt{t}}. \] 
+This follows by a constant scaling of the variable of $p'(\cdot)$. A standard concentration argument (for instance using techniques similar to~\cite{2017KS}) now implies that if $n \geq d^{t/2} \poly \log (d)$ with probability at least $1-1/d^2$, we have 
+
+ \[ \frac{\sigma^2}{n} \sum_{i=1}^n p^2(\sigma z_i) \leq \frac{2C'}{\sqrt{t}} \] 
+
+Observe that since $p$ is even, it only contains even powers of $\sigma$ hence $r(\sigma^2) =  \frac{\sigma^2}{n} \sum_{i=1}^n p^2(\sigma z_i)$ is a polynomial in the variable $\sigma^2$. Fact~\ref{fact:univariate-interval} now implies that if we can derive $\sigma^2 > 0$ and $\sigma^2 < 2$ we are done. Recalling $\sigma = \|v\|_2$, the first is immediate since $\|v\|_2^2$ is a sum of squares, and the second follows from our constraint. The lemma follows by noting that $z_i$ is distributed the same as $\langle x_i, v\rangle$.
+\end{proof} 
+
+\section{Proof of Theorem~\ref{thm:main2}}
+We now complete the proof of Theorem~\ref{thm:main2}. We will use a slight modification of our earlier constraint set:
+
+\begin{equation}
+  \cB_{w,\ell}\colon
+  \left \{
+    \begin{aligned}
+      &&
+      \textstyle\sum_{i=1}^n w_i
+      &= \alpha n\\
+      &\forall i\in [n],
+      & w_i^2
+      & =w_i \\
+      &\forall i\in [n],
+      & w_i \cdot (y_i - \iprod{x_i,\ell})
+      & = 0\\
+      &\forall in \in [d],
+      &\ell_i^2 &= \frac{1}{d}\\
+    \end{aligned}
+  \right \}
+\end{equation} 
+
+
+The rest of our algorithm remains the same:
+
+\begin{mdframed}
+  \begin{algorithms}[List-Decoding Noisy Linear Equations]
+    \label[algorithm]{alg:noisy-regression-hypercube}\mbox{}
+    \begin{description}
+    \item[Given:]
+    Sample $\cS$ of size $n$ drawn according to $\Lin(\alpha,n,\ell^*)$ with inliers $\cI$, $\eta > 0$. 
+    \item[Output:]
+    	A list $L \subseteq \R^d$ of size $O(1/\alpha)$ such that there exists a $\ell \in L$ satisfying $\|\ell -\ell^*\|_2 < \eta$.
+    \item[Operation:]\mbox{}
+    \begin{enumerate}
+		\item Find a degree $O(1/\alpha^2\eta^2)$ pseudo-distribution $\tilde{\mu}$ satisfying $\cB_{w,\ell}$ that minimizes $\|\pE[w]\|_2$.
+		\item For each $i \in [n]$ such that $\pE_{\tmu}[w_i] > 0$, let $v_i = \frac{\pE_{\tmu}[w_i \ell]}{\pE_{\tmu}[w_i]}$. Otherwise, set $v_i =0$.
+		\item 
+		Take $J$ be a random multiset formed by union of $O(1/\alpha)$ independent draws of $i \in [n]$ with probability $\frac{\pE[w_i]}{\alpha n}$.
+		\item Output $L = \{v_i \mid i \in J\}$ where $J \subseteq [n]$.
+	\end{enumerate}
+    \end{description}    
+  \end{algorithms}
+\end{mdframed}
+
+The proof of Theorem~\ref{thm:main2} is obtained by analyzing Algorithm~\ref{alg:noisy-regression-hypercube}. The analysis is exactly the same except for Lemma~\ref{lem:polynomial-fact} which is replaced by the lemma below. 
+
+\begin{lemma} \label{lem:polynomial-fact-hypercube}
+Fix any $t \in \N$ and let $n \geq d^{t/2} \poly \log{(d)}$. 
+Then, for some absolute constant $C' > 0$, there's a square, core indicator polynomial $p^2$ of degree $t$ satisfying $p^2(0) = 1$, $p^2(x) = p^2(-x)$ for all $x$ such that with probability at least $1-1/d^2$ over the draw of the inliers in $\Lin_D(\alpha,n,\ell^*)$ for a nice distribution $D$ and $\ell^* \in \Set{\pm \frac{1}{\sqrt{d}}}^d$:
+\[
+\Set{v_i^2 = \frac{1}{d} \forall i} \sststile{t}{v} \Set{\frac{1}{|\cI|} \sum_{i \in \cI} \|v-\ell^*\|_2^2 p^2(\langle x_i, v-\ell^* \rangle) \leq \frac{C'}{\sqrt{t}} }\mper
+\]
+
+\end{lemma}
+
+\begin{proof}[Proof Sketch]
+Lemma~\ref{lem:univppty_box} gives the existence of the required core indicator polynomial for any $v \in \S^{d-1}$. 
+What remains to argue is a SoS proof of the requisite bound on the empirical expectation of $p^2$. 
+As in the proof of Lemma~\ref{lem:polynomial-fact}, by appealing to concentration of the $2t$th moment tensor of $D$ in spectral norm, we reduce our task to establishing a SoS proof of the inequality $\|v-\ell^*\|^2\E_{x \sim D} p^2(\iprod{x,v-\ell^*}) \leq \frac{C}{\sqrt{t}}$.
+
+The simple but key observation underlying the proof is that for any univariate polynomial $p$ of degree at most $2$, $\E_{x \sim D} p^2(\iprod{x,v-\ell^*})$ is a \emph{symmetric} polynomial in $v-\ell^*$ with non-zero coefficients only on even-degree monomials in $v-\ell^*$. This follows by noting that the coordinates of $D$ are independent and identically distributed and $p^2$ is an even function. All symmetric polynomials can be expressed as polynomials in the ``power-sum'' polynomials $\sum_{i = 1}^n \|v-\ell^*\|^{2i}$ for $i \leq 2t$. To finish the proof, we observe:
+
+First observe that for any $i$:
+\[
+\Set{v_i^2 = \frac{1}{\sqrt{d}} } \sststile{4}{v} \Set{(v_i -\ell^*_i)^3 = (v_i - \ell^*_i)} \mper
+\]
+
+Using this fact repeatedly yields:
+\[
+\Set{v_i^2 = \frac{1}{\sqrt{d}} \forall i} \sststile{2i}{v} \Set{(v_i -\ell^*_i)^{2i} = (v_i - \ell^*_i)^2} \mper
+\]
+
+This implies that:
+\[
+\Set{v_i^2 = \frac{1}{\sqrt{d}} \forall i} \sststile{2i}{v} \Set{\sum_{i =1}^d(v_i -\ell^*_i)^{2i} = \sum_{i = 1}^d(v_i - \ell^*_i)^2} \mper
+\]
+
+Thus,  for some univariate polynomial $F$ of degree at most $2t$,
+\begin{equation} \label{eq:reduce-to-univariate}
+\Set{v_i^2 = \frac{1}{\sqrt{d}} \forall i} \sststile{2t}{v} \Set{\E_{x \sim D} p^2(\iprod{x,v-\ell^*}) = F(\|v-\ell^*\|_2^2)} \mper
+\end{equation}
+
+From Lemma~\ref{lem:univppty_box}, $\|v-\ell^*\|_2^2 F(\|v-\ell^*\|_2^2) \leq \frac{C'}{\sqrt{t}}$ whenever $\|v-\ell^*\|_2^2 \leq 2$. Since $F$ is a univariate polynomial and $\|v-\ell^*\|_2^2\leq 2$ is an ``interval constraints'' by applying Fact~\ref{fact:univariate-interval}, we immediately obtain:
+
+\begin{equation} \label{eq:final-univariate-step}
+\sststile{2t}{\|v-\ell^*\|_2^2} \Set{\|v-\ell^*\|_2^2 F(\|v-\ell^*\|_2^2) \leq \frac{C'}{\sqrt{t}}} 
+\end{equation}
+Combining \eqref{eq:reduce-to-univariate} and \eqref{eq:final-univariate-step} finishes the proof. 
+
+
+
+
+\end{proof}
+
+\section{Certifiably Anti-Concentrated Distributions} \label{sec:certified-anti-concentration}
+In this section, we prove certified anti-concentration inequalities for some basic families of distributions. 
+
+\begin{definition}[Certified Anti-Concentration]
+A distribution $D$ on $\R^d$ is said to be \emph{certified} $\delta$-anti-concentrated if 
+\end{definition}
