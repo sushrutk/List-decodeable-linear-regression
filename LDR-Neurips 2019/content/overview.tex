@@ -4,7 +4,7 @@
 
 
 \section{Overview of our Technique} \label{sec:overview}
-In this section, we illustrate the important ideas in our algorithm for list-decodable regression. 
+In this section, we give a bird's eye view of our approach and illustrate the important ideas in our algorithm for list-decodable regression. 
 Thus, given a sample $\cS = \{(x_i,y_i)\}_{i = 1}^n$ from $\Lin_D(\alpha,\ell^*)$, we must construct a constant-size list $L$ of linear functions containing an $\ell$ close to $\ell^*$. 
 
 Our algorithm is based on the sum-of-squares method. We build on the ``identifiability to algorithms'' paradigm developed in several prior works~\cite{DBLP:conf/colt/BarakM16,MR3388192-Barak15,DBLP:conf/focs/MaSS16,2017KS,HopkinsLi17,KothariSteinhardt17,DBLP:conf/colt/KlivansKM18} with some important conceptual differences. 
@@ -131,14 +131,16 @@ For the sake of intuition, it might be helpful to (falsely) think of pseudo-dist
 For any maximally uniform $\tmu$ of degree $\geq 2$,  $\sum_{i \in \cI} \pE_{\tmu}[w_i]  \geq \alpha |\cI| = \alpha \sum_{i\in [n]} \pE_{\tmu}[w_i]$\mper\label{prop:good-weight-on-inliers}
 \end{proposition} 
 
-For Step 2, however, we hit a wall: it's not possible to obtain independent samples from $\tmu$ given only low-degree moments. Our algorithm relies on an alternative strategy instead. 
+For Step 2, however, we hit a wall: it's not possible to obtain independent samples from $\tmu$ given only low-degree moments. 
+
+\paragraph{Rounding by Votes} To circumvent this hurdle, our algorithm departs from rounding strategies for pseudo-distributions used in prior works and instead ``rounds'' \emph{each} sample to a candidate linear function. While a priori, this method produces $n$ different candidates instead of one, we will be able to extract a list of $O(\frac{1}{\alpha})$ size that contains the true vector from them. This step will crucially rely on anti-concentration properties of $\cI$. 
 
 Consider the vector $v_i = \frac{\pE_{\tmu}[w_i \ell]}{\pE_{\tmu}[w_i]}$ whenever $\pE_{\tmu}[w_i] \neq 0$ (set $v_i$ to zero, otherwise).  This is simply the (scaled) average, according to $\tmu$, of all the linear functions $\ell$ that are used to label the sets $S$ of size $\alpha n$ in the support of $\tmu$ whenever $i \in S$. Further, $v_i$ depends only on the first two moments of $\tmu$.
 
-We think of $v_i$s as ``guesses''%
+We think of $v_i$s as ``votes''%
 %\footnote{A similar idea was first observed in~\cite{KS19} to obtain a simpler algorithm for list-decodable robust mean estimation.}
-made by the $i$th sample for the unknown linear function. 
-Let us focus our attention on the guesses $v_i$ of $i \in \cI$ - the inliers. We will show that according to the distribution proportional to $\pE[w]$, the average squared distance of $v_i$ from $\ell^*$ is at max $\eta$:
+cast by the $i$th sample for the unknown linear function. 
+Let us focus our attention on the votes $v_i$ of $i \in \cI$ - the inliers. We will show that according to the distribution proportional to $\pE[w]$, the average $\ell_2$ distance of $v_i$ from $\ell^*$ is at max $\eta$:
 
 \begin{equation}
 \frac{1}{\sum_{i \in \cI} \pE[w_i]} \sum_{i \in \cI} \pE[w_i] \| v_i - \ell^*\|_2  < \eta \mper \label{eq:inliers-guess-well}\tag{$\star$}
@@ -151,7 +153,7 @@ Before diving into \eqref{eq:inliers-guess-well}, let's see how it gives us our 
 	\item For $O(\frac{1}{\alpha})$ times, independently choose a random index $i \in [n]$ with probability proportional to $\pE_{\tmu}[w_i]$ and return the list of corresponding $v_i$s. 
 \end{enumerate} 
 
-Step 1 above is a convex program and can be solved in polynomial time. Let's analyze step 2 to see why the algorithm works. Using \eqref{eq:inliers-guess-well} and Markov's inequality, conditioned on $i \in \cI$, $\|v_i - \ell^*\|_2 \leq 2 \eta$ with probability $\geq 1/2$. By Proposition~\ref{prop:good-weight-on-inliers}, $\frac{\sum_{i \in \cI} \pE[w_i]}{\sum_{i \in [n] \pE[w_i]}} \geq \alpha$ so $i \in \cI$ with probability at least $\alpha$. Thus in each iteration of step 2, with probability at least $\alpha/2$, we choose an $i$ such that $v_i$ is $2\eta$-close to $\ell^*$. Repeating $O(1/\alpha)$ times gives us the $0.99$ chance of success.
+Step 1 above is a convex program - it minimizes a norm subject on the convex set of pseudo-distributions - and can be solved in polynomial time. Let's analyze step 2 to see why the algorithm works. Using \eqref{eq:inliers-guess-well} and Markov's inequality, conditioned on $i \in \cI$, $\|v_i - \ell^*\|_2 \leq 2 \eta$ with probability $\geq 1/2$. By Proposition~\ref{prop:good-weight-on-inliers}, $\frac{\sum_{i \in \cI} \pE[w_i]}{\sum_{i \in [n] \pE[w_i]}} \geq \alpha$ so $i \in \cI$ with probability at least $\alpha$. Thus in each iteration of step 2, with probability at least $\alpha/2$, we choose an $i$ such that $v_i$ is $2\eta$-close to $\ell^*$. Repeating $O(1/\alpha)$ times gives us the $0.99$ chance of success.
 
 \paragraph{\eqref{eq:inliers-guess-well} via anti-concentration} As in the information-theoretic argument, \eqref{eq:inliers-guess-well} relies on the anti-concentration of $\cI$.
 Let's do a quick proof for the case when $\tmu$ is an actual distribution $\mu$.\blfootnote{\textbf{Please note that sections $3$-$6$ are in the supplementary material. }} 
@@ -159,8 +161,8 @@ Let's do a quick proof for the case when $\tmu$ is an actual distribution $\mu$.
 \begin{proof}[Proof of \eqref{eq:inliers-guess-well} for actual distributions $\mu$]%\Pnote{we already defined ws when we wrote the system 2.1. So changed the language here to "observe that...".}
 Observe that $\mu$ is a distribution over $(w,\ell)$ satisfying \eqref{eq:quadratic-formulation}. Recall that $w$ indicates a subset $S \subseteq \cS$ of size $\alpha n$ and $w_i = 1$ iff $i \in S$. And $\ell \in \R^d$ satisfies all the equations in $S$.
 
-By Cauchy-Schwarz, $\sum_i \|\E[w_i \ell] - \E[w_i] \ell^*\| \leq \E_{\mu} [\sum_{i \in \cI} w_i \|\ell - \ell^*\|]$. 
-Next, as in Proposition~\ref{prop:simple-uniqueness-partition}, since $\cI$ is $\eta$-anti-concentrated, and for all $S$ such that $|\cI \cap S| \geq \eta |\cI|$,  $\ell-\ell^*= 0$. Thus, any such $S$ in the support of $\mu$ contributes $0$ to the expectation above. We will now show that the contribution from the remaining terms is upper bounded by $\eta$. Observe that since $\|\ell-\ell^*\| \leq 2$, \\$\E [\sum_{i \in \cI} w_i \|\ell - \ell^*\|] = \E [\1\Paren{|S \cap \cI|< \eta |\cI|}w_i \|\ell - \ell^*\|] = \E [\sum_{i \in S \cap \cI} \|\ell - \ell^*\|]  \leq 2\eta |\cI|$.
+By Cauchy-Schwarz, $\sum_i \|\E_\mu[w_i \ell] - \E_\mu[w_i] \ell^*\| \leq \E_{\mu} [\sum_{i \in \cI} w_i \|\ell - \ell^*\|]$. 
+Next, as in Proposition~\ref{prop:simple-uniqueness-partition}, since $\cI$ is $\eta$-anti-concentrated, and for all $S$ such that $|\cI \cap S| \geq \eta |\cI|$,  $\ell-\ell^*= 0$. Thus, any such $S$ in the support of $\mu$ contributes $0$ to the expectation above. We will now show that the contribution from the remaining terms is upper bounded by $\eta$. Observe that since $\|\ell-\ell^*\| \leq 2$, \\$\E_\mu [\sum_{i \in \cI} w_i \|\ell - \ell^*\|] = \E_\mu [\1\Paren{|S \cap \cI|< \eta |\cI|}w_i \|\ell - \ell^*\|] = \E_\mu [\sum_{i \in S \cap \cI} \|\ell - \ell^*\|]  \leq 2\eta |\cI|$.
 \end{proof}
 
 
@@ -183,7 +185,11 @@ Next, as in Proposition~\ref{prop:simple-uniqueness-partition}, since $\cI$ is $
 \paragraph{SoSizing Anti-Concentration} The key to proving \eqref{eq:inliers-guess-well} for pseudo-distributions is a \emph{sum-of-squares} (SoS) proof of anti-concentration inequality: $\Pr_{x \sim \cI} [\iprod{x,v} =0] \leq \eta$ in variable $v$. SoS is a restricted system for proving polynomial inequalities subject to polynomial inequality constraints. Thus, to even ask for a SoS proof we must phrase anti-concentration as a polynomial inequality. 
 
 To do this, let $p(z)$ be a low-degree polynomial approximator for the function $\1\Paren{ z=0}$. 
-Then, we can hope to ``replace'' the use of the inequality $\Pr_{x \sim \cI} [\iprod{x,v} =0] \leq \eta \equiv \E_{x \sim \cI} [\1(\iprod{x,v} = 0)] \leq \eta$ in the argument above by $\E_{x \sim \cI}[ p(\iprod{x,v})^2] \leq \eta$. Since  polynomials grow unboundedly for large enough inputs, it is \emph{necessary} for the uniform distribution on $\cI$ to have sufficiently light-tails to ensure that $\E_{x \sim \cI} p(\iprod{x,v})^2$ is small. In Lemma~\ref{lem:univppty_box}, we show that anti-concentration and light-tails are \emph{sufficient} to construct such a polynomial. 
+<<<<<<< HEAD
+Then, we can hope to ``replace'' the use of the inequality $\Pr_{x \sim \cI} [\iprod{x,v} =0] \leq \eta \equiv \E_{x \sim \cI} [\1(\iprod{x,v} = 0)] \leq \eta$ in the argument above by $\E_{x \sim \cI}[ p(\iprod{x,v})] \leq \eta$. Since polynomials grow unboundedly for large enough inputs, it is \emph{necessary} for the uniform distribution on $\cI$ to have sufficiently light-tails to ensure that $\E_{x \sim \cI} p(\iprod{x,v})$ is small. In Lemma~\ref{lem:univppty_box}, we show that anti-concentration and strictly sub-exponential tails are \emph{sufficient} to construct such a polynomial. 
+=======
+Then, we can hope to ``replace'' the use of the inequality $\Pr_{x \sim \cI} [\iprod{x,v} =0] \leq \eta \equiv \E_{x \sim \cI} [\1(\iprod{x,v} = 0)] \leq \eta$ in the argument above by $\E_{x \sim \cI}[ p(\iprod{x,v})^2] \leq \eta$. Since  polynomials grow unboundedly for large enough inputs, it is \emph{necessary} for the uniform distribution on $\cI$ to have sufficiently light-tails to ensure that $\E_{x \sim \cI} p(\iprod{x,v})^2$ is small. In Lemma~\ref{lem:univppty_box}, we show that anti-concentration and strictly sub-exponential tails are \emph{sufficient} to construct such a polynomial. 
+>>>>>>> 6e6d7c79a0791a9fa941f1cbf5ad6095ace9655b
 
 We can finally ask for a SoS proof for $\E_{x \sim \cI} p(\iprod{x,v}) \leq \eta$ in variable $v$. We prove such \emph{certified} anti-concentration inequalities for broad families of inlier distributions in Section~\ref{sec:certified-anti-concentration}.
 

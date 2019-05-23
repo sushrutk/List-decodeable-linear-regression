@@ -1,0 +1,13 @@
+\BOOKMARK [1][-]{section.1}{Introduction}{}% 1
+\BOOKMARK [2][-]{subsection.1.1}{Our Results}{section.1}% 2
+\BOOKMARK [1][-]{section.2}{Overview of our Technique}{}% 3
+\BOOKMARK [1][-]{section.3}{Preliminaries}{}% 4
+\BOOKMARK [2][-]{subsection.3.1}{Pseudo-distributions}{section.3}% 5
+\BOOKMARK [2][-]{subsection.3.2}{Sum-of-squares proofs}{section.3}% 6
+\BOOKMARK [1][-]{section.4}{Algorithm for List-Decodable Robust Regression}{}% 7
+\BOOKMARK [2][-]{subsection.4.1}{List-Decodable Regression for Boolean Vectors}{section.4}% 8
+\BOOKMARK [1][-]{section.5}{Certifiably Anti-Concentrated Distributions}{}% 9
+\BOOKMARK [1][-]{section.6}{Information-Theoretic Lower Bounds for List-Decodable Regression}{}% 10
+\BOOKMARK [1][-]{appendix.A}{Polynomial Approximation for Core-Indicator}{}% 11
+\BOOKMARK [1][-]{appendix.B}{Brute-force search can generate a exp\(d\) size list}{}% 12
+\BOOKMARK [1][-]{section*.18}{References}{}% 13

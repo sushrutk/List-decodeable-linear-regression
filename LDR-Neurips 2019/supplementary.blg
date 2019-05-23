@@ -1,0 +1,101 @@
+This is BibTeX, Version 0.99d (TeX Live 2018)
+Capacity: max_strings=100000, hash_size=100000, hash_prime=85009
+The top-level auxiliary file: supplementary.aux
+The style file: plain.bst
+Database file #1: bib/mathreview.bib
+Database file #2: bib/dblp.bib
+Database file #3: bib/custom.bib
+Repeated entry---line 9 of file bib/custom.bib
+ : @inproceedings{DBLP:conf/nips/Zhong0D16
+ :                                        ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 62 of file bib/custom.bib
+ : @article{DBLP:journals/corr/BalakrishnanWY14
+ :                                             ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 95 of file bib/custom.bib
+ : @inproceedings{DBLP:conf/aistats/SedghiJA16
+ :                                            ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 218 of file bib/custom.bib
+ : @inproceedings{DBLP:conf/stoc/BalcanBV08
+ :                                         ,
+I'm skipping whatever remains of this entry
+Warning--I'm ignoring conf/soda/DiakonikolasKS19's extra "booktitle" field
+--line 426 of file bib/custom.bib
+Database file #4: bib/scholar.bib
+Database file #5: bib/main.bib
+A bad cross reference---entry "DBLP:conf/colt/KlivansKM18"
+refers to entry "DBLP:conf/colt/2018", which doesn't exist
+A bad cross reference---entry "DBLP:conf/stoc/DiakonikolasKS18"
+refers to entry "DBLP:conf/stoc/2018", which doesn't exist
+A bad cross reference---entry "DBLP:conf/soda/0002D019"
+refers to entry "DBLP:conf/soda/2019", which doesn't exist
+A bad cross reference---entry "DBLP:conf/soda/DiakonikolasKK018"
+refers to entry "DBLP:conf/soda/2018", which doesn't exist
+A bad cross reference---entry "DBLP:conf/nips/Bhatia0KK17"
+refers to entry "DBLP:conf/nips/2017", which doesn't exist
+A bad cross reference---entry "conf/soda/KarmalkarP19"
+refers to entry "conf/soda/2019sosa", which doesn't exist
+A bad cross reference---entry "DBLP:conf/colt/ChenYC14"
+refers to entry "DBLP:conf/colt/2014", which doesn't exist
+A bad cross reference---entry "DBLP:conf/colt/LiL18"
+refers to entry "DBLP:conf/colt/2018", which doesn't exist
+A bad cross reference---entry "DGJSV09"
+refers to entry "DBLP:conf/focs/2009", which doesn't exist
+Warning--I didn't find a database entry for "DBLP:conf/soda/2018"
+Warning--I didn't find a database entry for "DBLP:conf/soda/2019"
+Warning--I didn't find a database entry for "DBLP:conf/colt/2014"
+Warning--I didn't find a database entry for "DBLP:conf/colt/2018"
+Warning--I didn't find a database entry for "conf/soda/2019sosa"
+Warning--I didn't find a database entry for "DBLP:conf/nips/2017"
+Warning--I didn't find a database entry for "DBLP:conf/stoc/2018"
+Warning--I didn't find a database entry for "DBLP:conf/focs/2009"
+Warning--empty note in HopkinsLi17
+Warning--empty note in KothariSteinhardt17
+Warning--there's a number but no volume in MR939596-Shor87
+Warning--empty journal in MR0426989
+Warning--empty journal in HermiteNum
+Warning--empty year in HermiteNum
+You've used 58 entries,
+            2118 wiz_defined-function locations,
+            878 strings with 15015 characters,
+and the built_in function-call counts, 23112 in all, are:
+= -- 2401
+> -- 933
+< -- 34
++ -- 372
+- -- 307
+* -- 1441
+:= -- 3506
+add.period$ -- 189
+call.type$ -- 58
+change.case$ -- 324
+chr.to.int$ -- 0
+cite$ -- 64
+duplicate$ -- 1025
+empty$ -- 1804
+format.name$ -- 307
+if$ -- 5120
+int.to.chr$ -- 0
+int.to.str$ -- 58
+missing$ -- 54
+newline$ -- 293
+num.names$ -- 120
+pop$ -- 369
+preamble$ -- 1
+purify$ -- 268
+quote$ -- 0
+skip$ -- 875
+stack$ -- 0
+substring$ -- 1578
+swap$ -- 416
+text.length$ -- 34
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 228
+warning$ -- 6
+while$ -- 219
+width$ -- 60
+write$ -- 648
+(There were 13 error messages)
